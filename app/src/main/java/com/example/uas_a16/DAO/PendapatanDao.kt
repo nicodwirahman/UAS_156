@@ -25,4 +25,20 @@ interface PendapatanDao {
     @Query("UPDATE pendapatan SET total = total + :total WHERE idAset = :idAset")
     suspend fun updatePendapatan(idAset: Int, total: Double)
 
+
+    // Mengambil pendapatan berdasarkan ID Aset
+    @Query("SELECT * FROM pendapatan WHERE idAset = :idAset")
+    fun getPendapatanByAset(idAset: Int): LiveData<List<Pendapatan>>
+
+    // Mengambil pendapatan berdasarkan ID Kategori
+    @Query("SELECT * FROM pendapatan WHERE idKategori = :idKategori")
+    fun getPendapatanByKategori(idKategori: Int): LiveData<List<Pendapatan>>
+
+    // Mengambil seluruh data pendapatan
+    @Query("SELECT * FROM pendapatan")
+    fun getAllPendapatan(): LiveData<List<Pendapatan>>
+
+    // Menghitung total pendapatan
+    @Query("SELECT SUM(total) FROM pendapatan")
+    fun getTotalPendapatan(): LiveData<Double>
 }
