@@ -1,6 +1,35 @@
 package com.example.uas_a16.ui.ViewModel.pendapatan
 
+// File: InsertPendapatanViewModel.kt
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.uas_a16.Repository.PendapatanRepository
+import kotlinx.coroutines.launch
 
+class InsertPendapatanViewModel(private val pendapatanRepository: PendapatanRepository) : ViewModel() {
+
+    var uiState by mutableStateOf(InsertPendapatanUiState())
+        private set
+
+    fun updateInsertPendapatanState(insertPendapatanEvent: InsertPendapatanEvent) {
+        uiState = uiState.copy(insertPendapatanEvent = insertPendapatanEvent)
+    }
+
+    suspend fun insertPendapatan() {
+        viewModelScope.launch {
+            try {
+                val pendapatan = uiState.insertPendapatanEvent.toPendapatan()
+                pendapatanRepository.insertPendapatan(pendapatan)
+                pendapatanRepository.updatePendapatan(pendapatan.idAset, pendapatan.total)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+}
 data class InsertPendapatanEvent(
     val idAset: Int = 0,
     val idKategori: Int = 0,
