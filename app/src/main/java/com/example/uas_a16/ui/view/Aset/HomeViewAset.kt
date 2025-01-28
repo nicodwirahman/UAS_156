@@ -1,0 +1,240 @@
+package com.example.uas_a16.ui.view.Aset
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas_a16.DAO.AsetDao
+import com.example.uas_a16.R
+
+import com.example.uas_a16.ui.navigasi.AlamatNavigasi
+import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
+import kotlinx.coroutines.launch
+
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas_a16.Repository.AsetRepository
+import com.example.uas_a16.model.Aset
+import kotlinx.coroutines.launch
+
+// Main Screen
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeAsetScreen(
+    navigateToItemEntry: () -> Unit,
+    navigateToDetail: (String) -> Unit,
+    navigateToEdit: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeAsetViewModel = viewModel()
+) {
+    // Scaffold untuk mengatur layout dasar dengan TopAppBar dan FloatingActionButton
+    Scaffold(
+        topBar = {
+            CostumeTopAppBar(
+                title = "Home Aset",
+                canNavigateBack = false,
+                onRefresh = { viewModel.getAset() }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = navigateToItemEntry) {
+                Icon(Icons.Default.Add, contentDescription = "Add Aset")
+            }
+        }
+    ) { innerPadding ->
+        // Menampilkan status Aset (Loading, Success, atau Error)
+        when (viewModel.asetUiState) {
+            is HomeAsetUiState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            is HomeAsetUiState.Success -> {
+                val asetList = (viewModel.asetUiState as HomeAsetUiState.Success).aset
+                if (asetList.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(text = "Tidak ada data Aset")
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.padding(innerPadding),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(asetList.size) { index ->
+                            val item = asetList[index]
+                            AsetItem(
+                                aset = item,
+                                onDetailClick = { navigateToDetail(item.idAset.toString()) },
+                                onEditClick = { navigateToEdit(item.idAset.toString()) },
+                                onDeleteClick = {
+                                    viewModel.deleteAset(item)
+                                    viewModel.getAset()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+            is HomeAsetUiState.Error -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("Terjadi kesalahan saat memuat data.")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(onClick = { viewModel.getAset() }) {
+                            Text("Coba Lagi")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Komponen untuk menampilkan item Aset
+@Composable
+fun AsetItem(
+    aset: Aset,
+    onDetailClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = aset.namaAset, style = MaterialTheme.typography.titleMedium)
+                Text(text = "ID Kategori: ${aset.idKategori}", style = MaterialTheme.typography.bodyMedium)
+            }
+            IconButton(onClick = onDetailClick) {
+                Icon(Icons.Default.Info, contentDescription = "Detail")
+            }
+            IconButton(onClick = onEditClick) {
+                Icon(Icons.Default.Edit, contentDescription = "Edit")
+            }
+            IconButton(onClick = onDeleteClick) {
+                Icon(Icons.Default.Delete, contentDescription = "Hapus")
+            }
+        }
+    }
+}
+
+// Komponen untuk TopAppBar kustom
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CostumeTopAppBar(
+    title: String,
+    canNavigateBack: Boolean,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    navigateUp: () -> Unit = {},
+    onRefresh: () -> Unit = {}
+) {
+    CenterAlignedTopAppBar(
+        title = { Text(text = title) },
+        actions = {
+            Icon(
+                imageVector = Icons.Default.Refresh,
+                contentDescription = "Refresh",
+                modifier = Modifier.clickable { onRefresh() }
+            )
+        },
+        modifier = modifier,
+        scrollBehavior = scrollBehavior,
+        navigationIcon = {
+            if (canNavigateBack) {
+                IconButton(onClick = navigateUp) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Navigate Back"
+                    )
+                }
+            }
+        }
+    )
+}
+
+// UI State untuk HomeAsetScreen
+sealed class HomeAsetUiState {
+    data class Success(val aset: List<Aset>) : HomeAsetUiState()
+    object Error : HomeAsetUiState()
+    object Loading : HomeAsetUiState()
+}
+
+// ViewModel untuk HomeAsetScreen
+class HomeAsetViewModel(private val asetRepository: AsetRepository) : ViewModel() {
+    var asetUiState: HomeAsetUiState by mutableStateOf(HomeAsetUiState.Loading)
+        private set
+
+    init {
+        getAset()
+    }
+
+    // Mendapatkan list Aset
+    fun getAset() {
+        viewModelScope.launch {
+            asetUiState = HomeAsetUiState.Loading
+            asetUiState = try {
+                val asetList = asetRepository.allAset.value ?: emptyList()
+                HomeAsetUiState.Success(asetList)
+            } catch (e: Exception) {
+                HomeAsetUiState.Error
+            }
+        }
+    }
+
+    // Menghapus Aset
+    fun deleteAset(aset: Aset) {
+        viewModelScope.launch {
+            try {
+                asetRepository.deleteAset(aset)
+            } catch (e: Exception) {
+                asetUiState = HomeAsetUiState.Error
+            }
+        }
+    }
+}
+
+// Factory untuk ViewModel
+class AsetViewModelFactory(private val asetRepository: AsetRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return HomeAsetViewModel(asetRepository) as T
+    }
+}
