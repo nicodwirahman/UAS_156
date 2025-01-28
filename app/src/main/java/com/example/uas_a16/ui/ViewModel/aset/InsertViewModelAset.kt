@@ -2,7 +2,36 @@ package com.example.uas_a16.ui.ViewModel.aset
 
 
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.example.uas_a16.Repository.AsetRepository
 import com.example.uas_a16.model.Aset
+class InsertAsetViewModel(private val asetRepository: AsetRepository) : ViewModel() {
+    // State untuk menyimpan data input Aset
+    var uiState by mutableStateOf(InsertUiState())
+        private set
+
+    // Fungsi untuk mengupdate state berdasarkan input pengguna
+    fun updateInsertAsetState(insertUiEvent: InsertUiEvent) {
+        uiState = uiState.copy(insertUiEvent = insertUiEvent)
+    }
+
+    // Fungsi untuk menyimpan data Aset ke repository
+    fun insertAset() {
+        viewModelScope.launch {
+            try {
+                asetRepository.insertAset(uiState.insertUiEvent.toAset())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+}
+
 // State untuk menyimpan data input Aset
 data class InsertUiState(
     val insertUiEvent: InsertUiEvent = InsertUiEvent()
