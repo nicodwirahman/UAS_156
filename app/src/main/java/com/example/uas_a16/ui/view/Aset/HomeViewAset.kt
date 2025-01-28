@@ -1,6 +1,6 @@
 package com.example.uas_a16.ui.view.Aset
 
-import androidx.compose.foundation.Image
+import HomeAsetViewModel
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,45 +10,30 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.uas_a16.DAO.AsetDao
-import com.example.uas_a16.R
 
-import com.example.uas_a16.ui.navigasi.AlamatNavigasi
 import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
 import kotlinx.coroutines.launch
 
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas_a16.Repository.AsetRepository
 import com.example.uas_a16.model.Aset
-import kotlinx.coroutines.launch
 
 // Main Screen
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun HomeAsetScreen(
     navigateToItemEntry: () -> Unit,
@@ -57,7 +42,6 @@ fun HomeAsetScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeAsetViewModel = viewModel()
 ) {
-    // Scaffold untuk mengatur layout dasar dengan TopAppBar dan FloatingActionButton
     Scaffold(
         topBar = {
             CostumeTopAppBar(
@@ -72,7 +56,6 @@ fun HomeAsetScreen(
             }
         }
     ) { innerPadding ->
-        // Menampilkan status Aset (Loading, Success, atau Error)
         when (viewModel.asetUiState) {
             is HomeAsetUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -117,11 +100,11 @@ fun HomeAsetScreen(
                     }
                 }
             }
+
+            else -> {}
         }
     }
-}
-
-// Komponen untuk menampilkan item Aset
+}// Komponen untuk menampilkan item Aset
 @Composable
 fun AsetItem(
     aset: Aset,
@@ -154,9 +137,7 @@ fun AsetItem(
             }
         }
     }
-}
-
-// Komponen untuk TopAppBar kustom
+}// Komponen untuk TopAppBar kustom
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CostumeTopAppBar(
@@ -190,51 +171,4 @@ fun CostumeTopAppBar(
         }
     )
 }
-
-// UI State untuk HomeAsetScreen
-sealed class HomeAsetUiState {
-    data class Success(val aset: List<Aset>) : HomeAsetUiState()
-    object Error : HomeAsetUiState()
-    object Loading : HomeAsetUiState()
-}
-
-// ViewModel untuk HomeAsetScreen
-class HomeAsetViewModel(private val asetRepository: AsetRepository) : ViewModel() {
-    var asetUiState: HomeAsetUiState by mutableStateOf(HomeAsetUiState.Loading)
-        private set
-
-    init {
-        getAset()
-    }
-
-    // Mendapatkan list Aset
-    fun getAset() {
-        viewModelScope.launch {
-            asetUiState = HomeAsetUiState.Loading
-            asetUiState = try {
-                val asetList = asetRepository.allAset.value ?: emptyList()
-                HomeAsetUiState.Success(asetList)
-            } catch (e: Exception) {
-                HomeAsetUiState.Error
-            }
-        }
-    }
-
-    // Menghapus Aset
-    fun deleteAset(aset: Aset) {
-        viewModelScope.launch {
-            try {
-                asetRepository.deleteAset(aset)
-            } catch (e: Exception) {
-                asetUiState = HomeAsetUiState.Error
-            }
-        }
-    }
-}
-
 // Factory untuk ViewModel
-class AsetViewModelFactory(private val asetRepository: AsetRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return HomeAsetViewModel(asetRepository) as T
-    }
-}
