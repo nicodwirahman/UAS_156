@@ -14,6 +14,12 @@ interface KategoriDao {
     )
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertKategori(kategori: Kategori)
+    @Delete
+    suspend fun deleteKategori(kategori: Kategori)
+
+    @Update
+    suspend fun updateKategori(kategori: Kategori)
+
 
 
 }
