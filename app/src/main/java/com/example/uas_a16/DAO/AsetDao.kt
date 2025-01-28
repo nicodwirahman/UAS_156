@@ -20,4 +20,9 @@ interface AsetDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAset(aset: Aset)
 
+    // Menghapus Aset
+    @Delete
+    suspend fun deleteAset(aset: Aset)
+
+
 }
