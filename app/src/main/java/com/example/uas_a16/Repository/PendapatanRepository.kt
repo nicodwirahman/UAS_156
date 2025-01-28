@@ -1,43 +1,34 @@
 package com.example.uas_a16.Repository
 
-import androidx.lifecycle.LiveData
-import com.example.uas_a16.DAO.PendapatanDao
+import com.example.uas_a16.di.ApiService
 import com.example.uas_a16.model.Pendapatan
 
-class PendapatanRepository(private val pendapatanDao: PendapatanDao) {
+interface PendapatanRepository {
+    suspend fun getAllPendapatan(): List<Pendapatan>
+    suspend fun insertPendapatan(pendapatan: Pendapatan)
+    suspend fun updatePendapatan(id: Int, pendapatan: Pendapatan)
+    suspend fun deletePendapatan(id: Int)
+    suspend fun getPendapatanById(id: Int): Pendapatan
+}
 
-    // Mengambil seluruh data pendapatan
-    fun getAllPendapatan(): LiveData<List<Pendapatan>> {
-        return pendapatanDao.getAllPendapatan()
+class NetworkPendapatanRepository(private val apiService: ApiService) : PendapatanRepository {
+    override suspend fun getAllPendapatan(): List<Pendapatan> {
+        return apiService.getAllPendapatan()
     }
 
-    // Mengambil data pendapatan berdasarkan Aset
-    fun getPendapatanByAset(idAset: Int): LiveData<List<Pendapatan>> {
-        return pendapatanDao.getPendapatanByAset(idAset)
+    override suspend fun insertPendapatan(pendapatan: Pendapatan) {
+        apiService.insertPendapatan(pendapatan)
     }
 
-    // Mengambil data pendapatan berdasarkan Kategori
-    fun getPendapatanByKategori(idKategori: Int): LiveData<List<Pendapatan>> {
-        return pendapatanDao.getPendapatanByKategori(idKategori)
+    override suspend fun updatePendapatan(id: Int, pendapatan: Pendapatan) {
+        apiService.updatePendapatan(id, pendapatan)
     }
 
-    // Menambah pendapatan baru
-    suspend fun insertPendapatan(pendapatan: Pendapatan) {
-        pendapatanDao.insertPendapatan(pendapatan)
+    override suspend fun deletePendapatan(id: Int) {
+        apiService.deletePendapatan(id)
     }
 
-    // Menghapus pendapatan
-    suspend fun deletePendapatan(pendapatan: Pendapatan) {
-        pendapatanDao.deletePendapatan(pendapatan)
-    }
-
-    // Menghitung total pendapatan
-    fun getTotalPendapatan(): LiveData<Double> {
-        return pendapatanDao.getTotalPendapatan()
-    }
-
-    // Mengupdate pendapatan
-    suspend fun updatePendapatan(idAset: Int, total: Double) {
-        pendapatanDao.updatePendapatan(idAset, total)
+    override suspend fun getPendapatanById(id: Int): Pendapatan {
+        return apiService.getPendapatanById(id)
     }
 }

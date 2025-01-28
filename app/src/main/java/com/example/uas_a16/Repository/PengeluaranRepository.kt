@@ -1,47 +1,36 @@
 package com.example.uas_a16.Repository
 
-import androidx.lifecycle.LiveData
-import com.example.uas_a16.DAO.PengeluaranDao
+
+import com.example.uas_a16.di.ApiService
 import com.example.uas_a16.model.Pengeluaran
 
 
-class PengeluaranRepository(private val pengeluaranDao: PengeluaranDao) {
+interface PengeluaranRepository {
+    suspend fun getAllPengeluaran(): List<Pengeluaran>
+    suspend fun insertPengeluaran(pengeluaran: Pengeluaran)
+    suspend fun updatePengeluaran(id: Int, pengeluaran: Pengeluaran)
+    suspend fun deletePengeluaran(id: Int)
+    suspend fun getPengeluaranById(id: Int): Pengeluaran
+}
 
-    // Mengambil seluruh data pengeluaran
-    fun getAllPengeluaran(): LiveData<List<Pengeluaran>> {
-        return pengeluaranDao.getAllPengeluaran()
+class NetworkPengeluaranRepository(private val apiService: ApiService) : PengeluaranRepository {
+    override suspend fun getAllPengeluaran(): List<Pengeluaran> {
+        return apiService.getAllPengeluaran()
     }
 
-    // Mengambil data pengeluaran berdasarkan Aset
-    fun getPengeluaranByAset(idAset: Int): LiveData<List<Pengeluaran>> {
-        return pengeluaranDao.getPengeluaranByAset(idAset)
+    override suspend fun insertPengeluaran(pengeluaran: Pengeluaran) {
+        apiService.insertPengeluaran(pengeluaran)
     }
 
-    // Mengambil data pengeluaran berdasarkan Kategori
-    fun getPengeluaranByKategori(idKategori: Int): LiveData<List<Pengeluaran>> {
-        return pengeluaranDao.getPengeluaranByKategori(idKategori)
+    override suspend fun updatePengeluaran(id: Int, pengeluaran: Pengeluaran) {
+        apiService.updatePengeluaran(id, pengeluaran)
     }
 
-    // Menambah pengeluaran baru
-    suspend fun insertPengeluaran(pengeluaran: Pengeluaran) {
-        pengeluaranDao.insertPengeluaran(pengeluaran)
+    override suspend fun deletePengeluaran(id: Int) {
+        apiService.deletePengeluaran(id)
     }
 
-    // Menghapus pengeluaran berdasarkan objek Pengeluaran
-    suspend fun deletePengeluaran(pengeluaran: Pengeluaran) {
-        pengeluaranDao.deletePengeluaran(pengeluaran)
-    }
-
-    // Menghitung total pengeluaran
-    fun getTotalPengeluaran(): LiveData<Double> {
-        return pengeluaranDao.getTotalPengeluaran()
-    }
-
-    // Mengambil pengeluaran berdasarkan ID
-    suspend fun getPengeluaranById(idAset: Int): Pengeluaran {
-        return pengeluaranDao.getPengeluaranById(idAset)
-    }    // Mengupdate data pengeluaran
-    suspend fun updatePengeluaran(pengeluaran: Pengeluaran) {
-        pengeluaranDao.updatePengeluaran(pengeluaran)
+    override suspend fun getPengeluaranById(id: Int): Pengeluaran {
+        return apiService.getPengeluaranById(id)
     }
 }

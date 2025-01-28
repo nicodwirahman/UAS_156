@@ -1,30 +1,34 @@
 package com.example.uas_a16.Repository
 
-import androidx.lifecycle.LiveData
-import com.example.uas_a16.DAO.KategoriDao
+import com.example.uas_a16.di.ApiService
 import com.example.uas_a16.model.Kategori
 
-class KategoriRepository(private val kategoriDao: KategoriDao) {
+interface KategoriRepository {
+    suspend fun getAllKategori(): List<Kategori>
+    suspend fun insertKategori(kategori: Kategori)
+    suspend fun updateKategori(id: Int, kategori: Kategori)
+    suspend fun deleteKategori(id: Int)
+    suspend fun getKategoriById(id: Int): Kategori
+}
 
-    // Mendapatkan seluruh data Kategori
-    val allKategori: LiveData<List<Kategori>> = kategoriDao.getAllKategori()
-
-    // Menambahkan Kategori baru
-    suspend fun insertKategori(kategori: Kategori) {
-        kategoriDao.insertKategori(kategori)
+class NetworkKategoriRepository(private val apiService: ApiService) : KategoriRepository {
+    override suspend fun getAllKategori(): List<Kategori> {
+        return apiService.getAllKategori()
     }
 
-    // Menghapus Kategori
-    suspend fun deleteKategori(kategori: Kategori) {
-        kategoriDao.deleteKategori(kategori)
+    override suspend fun insertKategori(kategori: Kategori) {
+        apiService.insertKategori(kategori)
     }
 
-    // Memperbarui Kategori
-    suspend fun updateKategori(kategori: Kategori) {
-        kategoriDao.updateKategori(kategori)
+    override suspend fun updateKategori(id: Int, kategori: Kategori) {
+        apiService.updateKategori(id, kategori)
     }
-    // Mendapatkan Kategori berdasarkan ID
-    fun getKategoriById(idKategori: Int): LiveData<Kategori> {
-        return kategoriDao.getKategoriById(idKategori)
+
+    override suspend fun deleteKategori(id: Int) {
+        apiService.deleteKategori(id)
+    }
+
+    override suspend fun getKategoriById(id: Int): Kategori {
+        return apiService.getKategoriById(id)
     }
 }

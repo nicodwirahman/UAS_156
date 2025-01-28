@@ -1,31 +1,34 @@
 package com.example.uas_a16.Repository
 
-import androidx.lifecycle.LiveData
-import com.example.uas_a16.DAO.AsetDao
+
+import com.example.uas_a16.di.ApiService
 import com.example.uas_a16.model.Aset
-class AsetRepository(private val asetDao: AsetDao) {
+interface AsetRepository {
+    suspend fun getAllAset(): List<Aset>
+    suspend fun insertAset(aset: Aset)
+    suspend fun updateAset(id: Int, aset: Aset)
+    suspend fun deleteAset(id: Int)
+    suspend fun getAsetById(id: Int): Aset
+}
 
-    // Mendapatkan seluruh data Aset
-    val allAset: LiveData<List<Aset>> = asetDao.getAllAset()
-
-    // Menambahkan Aset baru
-    suspend fun insertAset(aset: Aset) {
-        asetDao.insertAset(aset)
+class NetworkAsetRepository(private val apiService: ApiService) : AsetRepository {
+    override suspend fun getAllAset(): List<Aset> {
+        return apiService.getAllAset()
     }
 
-    // Menghapus Aset
-    suspend fun deleteAset(aset: Aset) {
-        asetDao.deleteAset(aset)
+    override suspend fun insertAset(aset: Aset) {
+        apiService.insertAset(aset)
     }
 
-    // Mendapatkan Aset berdasarkan ID
-    fun getAsetById(idAset: Int): LiveData<Aset> {
-        return asetDao.getAsetById(idAset)
+    override suspend fun updateAset(id: Int, aset: Aset) {
+        apiService.updateAset(id, aset)
     }
 
+    override suspend fun deleteAset(id: Int) {
+        apiService.deleteAset(id)
+    }
 
-    // Mengupdate Aset
-    suspend fun updateAset(aset: Aset) {
-        asetDao.updateAset(aset)
+    override suspend fun getAsetById(id: Int): Aset {
+        return apiService.getAsetById(id)
     }
 }
