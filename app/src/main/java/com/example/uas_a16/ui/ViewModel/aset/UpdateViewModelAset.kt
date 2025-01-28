@@ -2,11 +2,57 @@ package com.example.uas_a16.ui.ViewModel.aset
 
 
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.uas_a16.Repository.AsetRepository
 import com.example.uas_a16.model.Aset
 
 import kotlinx.coroutines.launch
 
+class UpdateAsetViewModel(private val asetRepository: AsetRepository) : ViewModel() {
+    // State untuk menyimpan data input Aset yang akan diupdate
+    var uiState by mutableStateOf(UpdateUiState())
+        private set
 
+    // Fungsi untuk mengupdate state berdasarkan input pengguna
+    fun updateAsetState(updateUiEvent: UpdateUiEvent) {
+        uiState = uiState.copy(updateUiEvent = updateUiEvent)
+    }
+
+    // Fungsi untuk memuat data Aset berdasarkan ID
+    fun loadAsetById(idAset: Int) {
+        viewModelScope.launch {
+            try {
+                val asetLiveData = asetRepository.getAsetById(idAset)
+                asetLiveData.observeForever { aset ->
+                    if (aset != null) {
+                        uiState = uiState.copy(updateUiEvent = aset.toUpdateUiEvent())
+                    } else {
+                        uiState = uiState.copy(errorMessage = "Data Aset tidak ditemukan")
+                    }
+                }
+            } catch (e: Exception) {
+                uiState = uiState.copy(errorMessage = e.message ?: "Gagal memuat data Aset")
+            }
+        }
+    }
+
+    // Fungsi untuk menyimpan perubahan data Aset ke repository
+    fun updateAset(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val aset = uiState.updateUiEvent.toAset()
+                asetRepository.updateAset(aset)
+                onSuccess() // Panggil callback saat berhasil
+            } catch (e: Exception) {
+                onError(e.message ?: "Gagal mengupdate Aset") // Panggil callback saat gagal
+            }
+        }
+    }
+}
 
 // State untuk menyimpan data input Aset yang akan diupdate
 data class UpdateUiState(
