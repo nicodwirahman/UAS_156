@@ -33,6 +33,7 @@ import com.example.uas_a16.ui.ViewModel.pendapatan.InsertPendapatanEvent
 import com.example.uas_a16.ui.ViewModel.pendapatan.InsertPendapatanUiState
 import com.example.uas_a16.ui.ViewModel.pendapatan.InsertPendapatanViewModel
 import com.example.uas_a16.ui.view.Aset.CostumeTopAppBar
+import com.example.uas_a16.ui.view.PenyediaModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 fun InsertPendapatanScreen(
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: InsertPendapatanViewModel = viewModel(),
+    viewModel: InsertPendapatanViewModel = viewModel(factory = PenyediaModel.Factory),
     asetList: List<Aset>, // Tambahkan parameter asetList
     kategoriList: List<Kategori> // Tambahkan parameter kategoriList
 ) {

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas_a16.ui.ViewModel.aset.UpdateUiEvent
 import com.example.uas_a16.ui.ViewModel.aset.UpdateUiState
+import com.example.uas_a16.ui.view.PenyediaModel
 import kotlinx.coroutines.launch
 
 
@@ -36,7 +37,7 @@ fun UpdateAsetScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
-    viewModel: UpdateAsetViewModel = viewModel(),
+    viewModel: UpdateAsetViewModel = viewModel(factory = PenyediaModel.Factory),
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

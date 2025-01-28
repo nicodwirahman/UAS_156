@@ -37,11 +37,13 @@ import androidx.compose.runtime.getValue
 import com.example.uas_a16.model.Kategori
 import com.example.uas_a16.ui.ViewModel.kategori.HomeKategoriUiState
 import com.example.uas_a16.ui.ViewModel.kategori.HomeKategoriViewModel
+import com.example.uas_a16.ui.view.PenyediaModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeKategoriScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeKategoriViewModel = viewModel(),
+    viewModel: HomeKategoriViewModel = viewModel(factory = PenyediaModel.Factory),
     navigateToInsert: () -> Unit,
     navigateToDetail: (Kategori) -> Unit,  // Tambahkan parameter untuk detail
     navigateToEdit: (Kategori) -> Unit,  // Tambahkan parameter untuk edit

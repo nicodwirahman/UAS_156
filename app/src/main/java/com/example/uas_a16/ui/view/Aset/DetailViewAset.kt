@@ -21,6 +21,7 @@ import com.example.uas_a16.ui.ViewModel.aset.DetailViewModelAset
 import com.example.uas_a16.ui.ViewModel.aset.DetailUiState
 import com.example.uas_a16.ui.ViewModel.aset.toAset
 import com.example.uas_a16.ui.navigasi.AlamatNavigasi
+import com.example.uas_a16.ui.view.PenyediaModel
 
 object DestinasiDetailAset : AlamatNavigasi {
     override val route = "detailAset"
@@ -37,7 +38,7 @@ fun DetailAsetScreen(
     navigateBack: () -> Unit,
     navigateToEdit: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModelAset = viewModel()
+    viewModel: DetailViewModelAset = viewModel(factory = PenyediaModel.Factory)
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(

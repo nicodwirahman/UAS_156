@@ -35,6 +35,7 @@ import com.example.uas_a16.ui.ViewModel.pengeluaran.DetailPengeluaranViewModel
 import com.example.uas_a16.ui.ViewModel.pengeluaran.toPengeluaran
 import com.example.uas_a16.ui.navigasi.AlamatNavigasi
 import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
+import com.example.uas_a16.ui.view.PenyediaModel
 
 object DestinasiDetailPengeluaran: AlamatNavigasi {
     override val route = "detailPengeluaran"
@@ -52,7 +53,7 @@ fun DetailPengeluaranScreen(
     navigateToEdit: () -> Unit,
     onDelete: () -> Unit, // Tambahkan parameter untuk fungsi hapus
     modifier: Modifier = Modifier,
-    viewModel: DetailPengeluaranViewModel = viewModel()
+    viewModel: DetailPengeluaranViewModel = viewModel(factory = PenyediaModel.Factory)
 ) {
     Scaffold(
         topBar = {

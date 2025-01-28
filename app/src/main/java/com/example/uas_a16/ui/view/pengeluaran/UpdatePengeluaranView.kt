@@ -25,6 +25,7 @@ import com.example.uas_a16.ui.ViewModel.pengeluaran.InsertPengeluaranUiState
 import com.example.uas_a16.ui.ViewModel.pengeluaran.UpdatePengeluaranViewModel
 import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
 import com.example.uas_a16.ui.navigasi.DestinasiUpdate
+import com.example.uas_a16.ui.view.PenyediaModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ fun UpdateScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
-    viewModel: UpdatePengeluaranViewModel = viewModel()
+    viewModel: UpdatePengeluaranViewModel = viewModel(factory = PenyediaModel.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

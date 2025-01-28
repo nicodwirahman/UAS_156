@@ -17,6 +17,7 @@ import com.example.uas_a16.ui.ViewModel.pendapatan.InsertPendapatanUiState
 import com.example.uas_a16.ui.ViewModel.pendapatan.UpdatePendapatanUiState
 import com.example.uas_a16.ui.ViewModel.pendapatan.UpdatePendapatanViewModel
 import com.example.uas_a16.ui.view.Aset.CostumeTopAppBar
+import com.example.uas_a16.ui.view.PenyediaModel
 import kotlinx.coroutines.launch
 
 
@@ -27,7 +28,7 @@ fun UpdatePendapatanScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onNavigate: () -> Unit,
-    viewModel: UpdatePendapatanViewModel = viewModel()
+    viewModel: UpdatePendapatanViewModel = viewModel(factory = PenyediaModel.Factory)
 ) {
     val coroutineScope = rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

@@ -30,6 +30,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.uas_a16.Repository.AsetRepository
 import com.example.uas_a16.model.Aset
+import com.example.uas_a16.ui.view.PenyediaModel
 
 // Main Screen
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,7 +41,7 @@ fun HomeAsetScreen(
     navigateToDetail: (String) -> Unit,
     navigateToEdit: (String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeAsetViewModel = viewModel()
+    viewModel: HomeAsetViewModel = viewModel(factory = PenyediaModel.Factory)
 ) {
     Scaffold(
         topBar = {

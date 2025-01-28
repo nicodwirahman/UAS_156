@@ -30,12 +30,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas_a16.model.Pendapatan
 import com.example.uas_a16.ui.ViewModel.pendapatan.HomePendapatanUiState
 import com.example.uas_a16.ui.ViewModel.pendapatan.HomePendapatanViewModel
+import com.example.uas_a16.ui.view.PenyediaModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePendapatanScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomePendapatanViewModel = viewModel(),
+    viewModel: HomePendapatanViewModel = viewModel(factory = PenyediaModel.Factory),
     navigateToInsert: () -> Unit,
     onDetailPendapatan: (Int) -> Unit // Tambahkan parameter ini
 ) {

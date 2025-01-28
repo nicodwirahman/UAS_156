@@ -31,13 +31,14 @@ import com.example.uas_a16.model.Kategori
 import com.example.uas_a16.ui.ViewModel.kategori.InsertKategoriUiState
 import com.example.uas_a16.ui.ViewModel.kategori.InsertKategoriViewModel
 import com.example.uas_a16.ui.view.Aset.CostumeTopAppBar
+import com.example.uas_a16.ui.view.PenyediaModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertKategoriScreen(
     modifier: Modifier = Modifier,
-    viewModel: InsertKategoriViewModel = viewModel(),
+    viewModel: InsertKategoriViewModel = viewModel(factory = PenyediaModel.Factory),
     navigateBack: () -> Unit
 ) {
     val insertKategoriUiState by viewModel.insertKategoriUiState.collectAsState()

@@ -15,12 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.uas_a16.ui.ViewModel.aset.InsertAsetViewModel
+import com.example.uas_a16.ui.view.PenyediaModel
 
 @Composable
 
 fun InsertAsetScreen(
     navigateBack: () -> Unit,
-    viewModel: InsertAsetViewModel = viewModel()
+    viewModel: InsertAsetViewModel = viewModel(factory = PenyediaModel.Factory)
 ) {
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
