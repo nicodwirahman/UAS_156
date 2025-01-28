@@ -1,12 +1,12 @@
 package com.example.uas_a16.ui.ViewModel.pendapatan
 
-// File: InsertPendapatanViewModel.kt
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uas_a16.Repository.PendapatanRepository
+import com.example.uas_a16.model.Pendapatan
 import kotlinx.coroutines.launch
 
 class InsertPendapatanViewModel(private val pendapatanRepository: PendapatanRepository) : ViewModel() {
@@ -30,6 +30,11 @@ class InsertPendapatanViewModel(private val pendapatanRepository: PendapatanRepo
         }
     }
 }
+
+data class InsertPendapatanUiState(
+    val insertPendapatanEvent: InsertPendapatanEvent = InsertPendapatanEvent()
+)
+
 data class InsertPendapatanEvent(
     val idAset: Int = 0,
     val idKategori: Int = 0,
@@ -38,28 +43,7 @@ data class InsertPendapatanEvent(
     val catatan: String = ""
 )
 
-data class InsertPendapatanUiState(
-    val insertPendapatanEvent: InsertPendapatanEvent = InsertPendapatanEvent()
-)
-
-data class Pendapatan(
-    val idAset: Int,
-    val idKategori: Int,
-    val total: Double,
-    val tanggalTransaksi: String,
-    val catatan: String
-)
-
-// Fungsi konversi
 fun InsertPendapatanEvent.toPendapatan(): Pendapatan = Pendapatan(
-    idAset = idAset,
-    idKategori = idKategori,
-    total = total,
-    tanggalTransaksi = tanggalTransaksi,
-    catatan = catatan
-)
-
-fun Pendapatan.toInsertPendapatanEvent(): InsertPendapatanEvent = InsertPendapatanEvent(
     idAset = idAset,
     idKategori = idKategori,
     total = total,
@@ -69,4 +53,12 @@ fun Pendapatan.toInsertPendapatanEvent(): InsertPendapatanEvent = InsertPendapat
 
 fun Pendapatan.toUiStatePendapatan(): InsertPendapatanUiState = InsertPendapatanUiState(
     insertPendapatanEvent = toInsertPendapatanEvent()
+)
+
+fun Pendapatan.toInsertPendapatanEvent(): InsertPendapatanEvent = InsertPendapatanEvent(
+    idAset = idAset,
+    idKategori = idKategori,
+    total = total,
+    tanggalTransaksi = tanggalTransaksi,
+    catatan = catatan
 )
