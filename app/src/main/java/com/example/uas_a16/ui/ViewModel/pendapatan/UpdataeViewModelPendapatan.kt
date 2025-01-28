@@ -1,17 +1,9 @@
 package com.example.uas_a16.ui.ViewModel.pendapatan
 
 import androidx.compose.runtime.mutableStateOf
-
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.uas_a16.Repository.PendapatanRepository
-import kotlinx.coroutines.launch
-
-// Sealed class untuk state UI
-import androidx.lifecycle.ViewModel
-
-// Sealed class untuk state UI
-
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 // Sealed class untuk state UI
@@ -38,8 +30,11 @@ class UpdatePendapatanViewModel(private val pendapatanRepository: PendapatanRepo
         viewModelScope.launch {
             updatePendapatanUiState.value = UpdatePendapatanUiState.Loading
             try {
+                // Mengambil data pendapatan dari InsertPendapatanEvent dan mengubahnya menjadi objek Pendapatan
                 val pendapatan = insertUiState.insertPendapatanEvent.toPendapatan()
-                pendapatanRepository.updatePendapatan(pendapatan.idAset, pendapatan.total)
+
+                // Menggunakan repository untuk memperbarui pendapatan
+                pendapatanRepository.updatePendapatan(pendapatan.idAset, pendapatan)
 
                 updatePendapatanUiState.value = UpdatePendapatanUiState.Success
             } catch (e: Exception) {

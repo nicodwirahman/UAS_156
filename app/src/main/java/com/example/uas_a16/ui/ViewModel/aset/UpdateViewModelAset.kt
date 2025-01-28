@@ -26,14 +26,8 @@ class UpdateAsetViewModel(private val asetRepository: AsetRepository) : ViewMode
     fun loadAsetById(idAset: Int) {
         viewModelScope.launch {
             try {
-                val asetLiveData = asetRepository.getAsetById(idAset)
-                asetLiveData.observeForever { aset ->
-                    if (aset != null) {
-                        uiState = uiState.copy(updateUiEvent = aset.toUpdateUiEvent())
-                    } else {
-                        uiState = uiState.copy(errorMessage = "Data Aset tidak ditemukan")
-                    }
-                }
+                val aset = asetRepository.getAsetById(idAset) // Dapatkan Aset langsung tanpa LiveData
+                uiState = uiState.copy(updateUiEvent = aset.toUpdateUiEvent())
             } catch (e: Exception) {
                 uiState = uiState.copy(errorMessage = e.message ?: "Gagal memuat data Aset")
             }
@@ -45,7 +39,7 @@ class UpdateAsetViewModel(private val asetRepository: AsetRepository) : ViewMode
         viewModelScope.launch {
             try {
                 val aset = uiState.updateUiEvent.toAset()
-                asetRepository.updateAset(aset)
+                asetRepository.updateAset(aset.idAset, aset) // Panggil updateAset dengan id dan aset
                 onSuccess() // Panggil callback saat berhasil
             } catch (e: Exception) {
                 onError(e.message ?: "Gagal mengupdate Aset") // Panggil callback saat gagal

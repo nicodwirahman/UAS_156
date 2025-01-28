@@ -20,31 +20,30 @@ sealed class HomeKategoriUiState {
 }
 
 class HomeKategoriViewModel(private val kategoriRepository: KategoriRepository) : ViewModel() {
-    private val _kategoriUiState =
-        MutableStateFlow<HomeKategoriUiState>(HomeKategoriUiState.Loading)
+    private val _kategoriUiState = MutableStateFlow<HomeKategoriUiState>(HomeKategoriUiState.Loading)
     val kategoriUiState: StateFlow<HomeKategoriUiState> = _kategoriUiState
 
     init {
         getKategori()
     }
 
-
     fun updateKategori(kategori: Kategori) {
         viewModelScope.launch {
             try {
-                kategoriRepository.updateKategori(kategori)
+                kategoriRepository.updateKategori(kategori.idKategori, kategori) // Gunakan id dan kategori
                 getKategori() // Refresh data setelah update
             } catch (e: Exception) {
                 _kategoriUiState.value = HomeKategoriUiState.Error
             }
         }
     }
+
     fun getKategori() {
         viewModelScope.launch {
             _kategoriUiState.value = HomeKategoriUiState.Loading
             try {
                 // Ambil list kategori langsung tanpa akses properti 'data'
-                val kategoriList = kategoriRepository.allKategori.value ?: emptyList()
+                val kategoriList = kategoriRepository.getAllKategori() // Panggil getAllKategori
                 _kategoriUiState.value = HomeKategoriUiState.Success(kategoriList)
             } catch (e: Exception) {
                 _kategoriUiState.value = HomeKategoriUiState.Error
@@ -55,7 +54,8 @@ class HomeKategoriViewModel(private val kategoriRepository: KategoriRepository) 
     fun deleteKategori(kategori: Kategori) {
         viewModelScope.launch {
             try {
-                kategoriRepository.deleteKategori(kategori)
+                kategoriRepository.deleteKategori(kategori.idKategori) // Panggil deleteKategori dengan id
+                getKategori() // Refresh data setelah delete
             } catch (e: Exception) {
                 _kategoriUiState.value = HomeKategoriUiState.Error
             }

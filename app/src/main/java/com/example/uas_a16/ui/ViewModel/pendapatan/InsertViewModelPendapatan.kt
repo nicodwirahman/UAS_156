@@ -19,11 +19,18 @@ class InsertPendapatanViewModel(private val pendapatanRepository: PendapatanRepo
     }
 
     suspend fun insertPendapatan() {
+        // Untuk memastikan kode hanya dijalankan pada scope yang benar
         viewModelScope.launch {
             try {
+                // Konversi event menjadi objek Pendapatan
                 val pendapatan = uiState.insertPendapatanEvent.toPendapatan()
+
+                // Menambahkan pendapatan baru ke repository
                 pendapatanRepository.insertPendapatan(pendapatan)
-                pendapatanRepository.updatePendapatan(pendapatan.idAset, pendapatan.total)
+
+                // Update jika perlu
+                pendapatanRepository.updatePendapatan(pendapatan.idAset, pendapatan)
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -43,6 +50,7 @@ data class InsertPendapatanEvent(
     val catatan: String = ""
 )
 
+// Fungsi untuk mengkonversi InsertPendapatanEvent ke Pendapatan
 fun InsertPendapatanEvent.toPendapatan(): Pendapatan = Pendapatan(
     idAset = idAset,
     idKategori = idKategori,
@@ -51,10 +59,12 @@ fun InsertPendapatanEvent.toPendapatan(): Pendapatan = Pendapatan(
     catatan = catatan
 )
 
+// Fungsi untuk mengkonversi Pendapatan ke InsertPendapatanUiState
 fun Pendapatan.toUiStatePendapatan(): InsertPendapatanUiState = InsertPendapatanUiState(
     insertPendapatanEvent = toInsertPendapatanEvent()
 )
 
+// Fungsi untuk mengkonversi Pendapatan ke InsertPendapatanEvent
 fun Pendapatan.toInsertPendapatanEvent(): InsertPendapatanEvent = InsertPendapatanEvent(
     idAset = idAset,
     idKategori = idKategori,

@@ -4,7 +4,9 @@ interface AlamatNavigasi {
     val route: String
 }
 
-
+object DestinasiKeuangan : AlamatNavigasi {
+    override val route = "keuangan"
+}
 
 object DestinasiPendapatan : AlamatNavigasi {
     override val route = "pendapatan"
@@ -23,14 +25,13 @@ object DestinasiUpdate : AlamatNavigasi {
     const val Kode = "Kode"
     val routeWithArg = "$route/{$Kode}"
 }
+
 object DestinasiDetailPengeluaran : AlamatNavigasi {
     override val route = "detailPengeluaran"
     const val ID_ASET = "idAset"
     val routeWithArg = "$route/{$ID_ASET}"
-
-    // Menambahkan titleRes
-    val titleRes = "Detail Pengeluaran"
 }
+
 object DestinasiDetailKategori : AlamatNavigasi {
     override val route = "detailKategori"
     const val idKategori = "idKategori"
@@ -41,7 +42,5 @@ object DestinasiDetailAset : AlamatNavigasi {
     override val route = "detailAset"
     const val ID_ASET = "idAset"
     val routeWithArg = "$route/{$ID_ASET}"
-
-    // Menambahkan titleRes
     val titleRes = "Detail Aset"
 }

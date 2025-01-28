@@ -18,11 +18,12 @@ class HomePengeluaranViewModel(private val pengeluaranRepository: PengeluaranRep
         getPengeluaran()
     }
 
+    // Fungsi untuk mengambil data pengeluaran
     fun getPengeluaran() {
         viewModelScope.launch {
             pengeluaranUiState = HomePengeluaranUiState.Loading
             try {
-                val pengeluaranList = pengeluaranRepository.getAllPengeluaran().value ?: emptyList()
+                val pengeluaranList = pengeluaranRepository.getAllPengeluaran() // Tidak perlu menggunakan .value
                 pengeluaranUiState = HomePengeluaranUiState.Success(pengeluaranList)
             } catch (e: Exception) {
                 pengeluaranUiState = HomePengeluaranUiState.Error
@@ -36,8 +37,8 @@ class HomePengeluaranViewModel(private val pengeluaranRepository: PengeluaranRep
             try {
                 // Ambil data pengeluaran berdasarkan idAset
                 val pengeluaran = pengeluaranRepository.getPengeluaranById(asetId)
-                // Hapus pengeluaran
-                pengeluaranRepository.deletePengeluaran(pengeluaran)
+                // Hapus pengeluaran berdasarkan ID
+                pengeluaranRepository.deletePengeluaran(asetId) // Kirim ID, bukan objek
                 // Refresh data setelah menghapus
                 getPengeluaran()
             } catch (e: Exception) {
@@ -46,7 +47,9 @@ class HomePengeluaranViewModel(private val pengeluaranRepository: PengeluaranRep
         }
     }
 }
-    sealed class HomePengeluaranUiState {
+
+// Definisi UI State untuk pengeluaran
+sealed class HomePengeluaranUiState {
     data class Success(val pengeluaran: List<Pengeluaran>) : HomePengeluaranUiState()
     object Error : HomePengeluaranUiState()
     object Loading : HomePengeluaranUiState()

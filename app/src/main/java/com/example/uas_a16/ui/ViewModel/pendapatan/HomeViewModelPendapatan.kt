@@ -10,7 +10,6 @@ import com.example.uas_a16.Repository.PendapatanRepository
 import com.example.uas_a16.model.Pendapatan
 import kotlinx.coroutines.launch
 import java.io.IOException
-
 sealed class HomePendapatanUiState {
     data class Success(val pendapatan: List<Pendapatan>) : HomePendapatanUiState()
     object Error : HomePendapatanUiState()
@@ -18,6 +17,7 @@ sealed class HomePendapatanUiState {
 }
 
 class HomePendapatanViewModel(private val pendapatanRepository: PendapatanRepository) : ViewModel() {
+
     var pendapatanUiState: HomePendapatanUiState by mutableStateOf(HomePendapatanUiState.Loading)
         private set
 
@@ -28,32 +28,34 @@ class HomePendapatanViewModel(private val pendapatanRepository: PendapatanReposi
     fun getPendapatan() {
         viewModelScope.launch {
             pendapatanUiState = HomePendapatanUiState.Loading
-            pendapatanUiState = try {
-                // Ambil list pendapatan langsung tanpa akses properti 'data'
-                val pendapatanList = pendapatanRepository.getAllPendapatan().value ?: emptyList()
-                HomePendapatanUiState.Success(pendapatanList)
+            try {
+                // Ambil list pendapatan dari repository
+                val pendapatanList = pendapatanRepository.getAllPendapatan()
+
+                // Periksa apakah pendapatanList kosong atau tidak, kemudian update UI state
+                pendapatanUiState = if (pendapatanList.isNotEmpty()) {
+                    HomePendapatanUiState.Success(pendapatanList)
+                } else {
+                    HomePendapatanUiState.Error
+                }
             } catch (e: Exception) {
-                HomePendapatanUiState.Error
+                pendapatanUiState = HomePendapatanUiState.Error
             }
         }
     }
 
-    fun deletePendapatan(aset: Int) {
+    fun deletePendapatan(asetId: Int) {
         viewModelScope.launch {
             try {
-                // Ambil data pendapatan berdasarkan aset
-                val pendapatanList = pendapatanRepository.getPendapatanByAset(aset).value
+                // Ambil pendapatan berdasarkan ID Aset
+                val pendapatan = pendapatanRepository.getPendapatanById(asetId)
 
-                // Periksa apakah ada data pendapatan yang ditemukan
-                val pendapatan = pendapatanList?.firstOrNull()
+                // Jika pendapatan ditemukan, hapus pendapatan tersebut
+                pendapatanRepository.deletePendapatan(pendapatan.idAset)
 
-                // Jika ditemukan, hapus pendapatan
-                if (pendapatan != null) {
-                    pendapatanRepository.deletePendapatan(pendapatan)
-                }
-            } catch (e: IOException) {
-                pendapatanUiState = HomePendapatanUiState.Error
-            } catch (e: HttpException) {
+                // Memperbarui UI jika penghapusan berhasil
+                getPendapatan()
+            } catch (e: Exception) {
                 pendapatanUiState = HomePendapatanUiState.Error
             }
         }

@@ -29,20 +29,18 @@ class DetailViewModelAset(
         viewModelScope.launch {
             detailUiState = DetailUiState(isLoading = true)
             try {
-                val asetLiveData = asetRepository.getAsetById(idAset)
-                asetLiveData.observeForever { aset ->
-                    if (aset != null) {
-                        detailUiState = DetailUiState(
-                            detailUiEvent = aset.toDetailUiEvent(), // Perbaikan di sini
-                            isLoading = false
-                        )
-                    } else {
-                        detailUiState = DetailUiState(
-                            isLoading = false,
-                            isError = true,
-                            errorMessage = "Data Aset tidak ditemukan"
-                        )
-                    }
+                val aset = asetRepository.getAsetById(idAset) // Gunakan repository untuk mendapatkan data Aset
+                if (aset != null) {
+                    detailUiState = DetailUiState(
+                        detailUiEvent = aset.toDetailUiEvent(), // Mengonversi Aset ke DetailUiEvent
+                        isLoading = false
+                    )
+                } else {
+                    detailUiState = DetailUiState(
+                        isLoading = false,
+                        isError = true,
+                        errorMessage = "Data Aset tidak ditemukan"
+                    )
                 }
             } catch (e: Exception) {
                 detailUiState = DetailUiState(
@@ -53,7 +51,10 @@ class DetailViewModelAset(
             }
         }
     }
-    }data class DetailUiState(
+}
+
+// State untuk menyimpan status UI dan data yang relevan
+data class DetailUiState(
     val detailUiEvent: DetailUiEvent = DetailUiEvent(),
     val isLoading: Boolean = false,
     val isError: Boolean = false,
@@ -66,13 +67,14 @@ class DetailViewModelAset(
         get() = detailUiEvent != DetailUiEvent()
 }
 
+// Event data yang akan ditampilkan pada UI
 data class DetailUiEvent(
     val idAset: String = "",
     val namaAset: String = "",
     val idKategori: String = ""
 )
 
-// Extension function untuk mengkonversi Aset ke DetailUiEvent
+// Extension function untuk mengonversi model Aset ke DetailUiEvent
 fun Aset.toDetailUiEvent(): DetailUiEvent {
     return DetailUiEvent(
         idAset = this.idAset.toString(),
@@ -81,7 +83,7 @@ fun Aset.toDetailUiEvent(): DetailUiEvent {
     )
 }
 
-// Extension function untuk mengkonversi DetailUiEvent ke Aset
+// Extension function untuk mengonversi DetailUiEvent kembali ke model Aset
 fun DetailUiEvent.toAset(): Aset {
     return Aset(
         idAset = this.idAset.toInt(),

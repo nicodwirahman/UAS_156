@@ -29,12 +29,6 @@ class DetailPengeluaranViewModel(
     var detailUiState: DetailPengeluaranUiState by mutableStateOf(DetailPengeluaranUiState())
         private set
 
-    private val _pengeluaranByAset: LiveData<List<Pengeluaran>> =
-        pengeluaranRepository.getPengeluaranByAset(idAset)
-
-    val pengeluaranByAset: LiveData<List<Pengeluaran>>
-        get() = _pengeluaranByAset
-
     init {
         getPengeluaranByAset()
     }
@@ -43,13 +37,18 @@ class DetailPengeluaranViewModel(
         viewModelScope.launch {
             detailUiState = detailUiState.copy(isLoading = true)
             try {
-                val result = pengeluaranRepository.getPengeluaranByAset(idAset).value
-                if (result != null) {
-                    detailUiState = detailUiState.copy(
-                        pengeluaranList = result,
-                        isLoading = false
-                    )
+                // Mengambil semua pengeluaran
+                val pengeluaranList = pengeluaranRepository.getAllPengeluaran()
+
+                // Sesuaikan filter berdasarkan atribut yang ada pada objek Pengeluaran
+                val filteredPengeluaranList = pengeluaranList.filter { pengeluaran ->
+                    pengeluaran.idAset == idAset  // Gantilah `asetId` dengan atribut yang ada pada objek Pengeluaran
                 }
+
+                detailUiState = detailUiState.copy(
+                    pengeluaranList = filteredPengeluaranList,
+                    isLoading = false
+                )
             } catch (e: Exception) {
                 detailUiState = detailUiState.copy(
                     isLoading = false,
@@ -64,11 +63,14 @@ class DetailPengeluaranViewModel(
     fun deletePengeluaran(pengeluaran: Pengeluaran) {
         viewModelScope.launch {
             try {
-                pengeluaranRepository.deletePengeluaran(pengeluaran)
+                // Pastikan pengeluaran.id adalah ID yang valid untuk dihapus
+                pengeluaranRepository.deletePengeluaran(pengeluaran.idAset)  // Menggunakan `id` dari objek Pengeluaran
                 detailUiState = detailUiState.copy(
                     isSuccess = true,
                     successMessage = "Pengeluaran berhasil dihapus"
                 )
+                // Mengupdate daftar setelah penghapusan
+                getPengeluaranByAset()
             } catch (e: Exception) {
                 detailUiState = detailUiState.copy(
                     isError = true,
@@ -78,7 +80,6 @@ class DetailPengeluaranViewModel(
         }
     }
 }
-
 data class DetailPengeluaranUiState(
     val detailUiEvent: InsertPengeluaranEvent = InsertPengeluaranEvent(),
     val pengeluaranList: List<Pengeluaran> = emptyList(),
@@ -91,6 +92,6 @@ data class DetailPengeluaranUiState(
     val isUiEventEmpty: Boolean
         get() = detailUiEvent == InsertPengeluaranEvent()
 
-    val isUiEventNotEmpty: Boolean // Tambahkan properti ini
+    val isUiEventNotEmpty: Boolean
         get() = detailUiEvent != InsertPengeluaranEvent()
 }

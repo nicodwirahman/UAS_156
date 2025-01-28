@@ -10,6 +10,7 @@ import com.example.uas_a16.ui.view.Aset.DetailAsetScreen
 import com.example.uas_a16.ui.view.Aset.HomeAsetScreen
 import com.example.uas_a16.ui.view.Aset.InsertAsetScreen
 import com.example.uas_a16.ui.view.Aset.UpdateAsetScreen
+import com.example.uas_a16.ui.view.Keungan.HomeKeuanganView
 import com.example.uas_a16.ui.view.kategori.HomeKategoriScreen
 import com.example.uas_a16.ui.view.kategori.InsertKategoriScreen
 import com.example.uas_a16.ui.view.pendapatan.DestinasiDetailPendapatan
@@ -23,21 +24,19 @@ import com.example.uas_a16.ui.view.pengeluaran.UpdateScreen
 
 
 @Composable
-fun PengelolaHalaman() {
+
+fun PengelolaHalaman(
+    modifier: Modifier = Modifier
+) {
     val navController = rememberNavController()
 
     NavHost(
         navController = navController,
-        startDestination = DestinasiDetailPengeluaran.route
+        startDestination = DestinasiKeuangan.route
     ) {
-        // Rute untuk Detail Pengeluaran
-        composable(DestinasiDetailPengeluaran.routeWithArg) { backStackEntry ->
-            val idAset = backStackEntry.arguments?.getString(DestinasiDetailPengeluaran.ID_ASET)
-            DetailPengeluaranScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToEdit = { /* Navigasi ke layar edit pengeluaran */ },
-                onDelete = { /* Handle delete action */ }
-            )
+        // Rute untuk Halaman Keuangan (HomeKeuangan)
+        composable(DestinasiKeuangan.route) {
+            HomeKeuanganView(navController = navController)
         }
 
         // Rute untuk Home Pengeluaran
@@ -57,10 +56,11 @@ fun PengelolaHalaman() {
                 kategoriList = listOf(), // Ganti dengan daftar kategori yang valid
                 asetList = listOf(), // Ganti dengan daftar aset yang valid
                 onValueChange = { /* Handle value change */ },
-                modifier = Modifier, // Opsional, bisa dihapus jika tidak diperlukan
+                modifier = modifier, // Menggunakan modifier yang diberikan
                 enabled = true // Opsional, bisa dihapus jika tidak diperlukan
             )
         }
+
         // Rute untuk Update Pengeluaran
         composable("updatePengeluaran") {
             UpdateScreen(
@@ -69,12 +69,12 @@ fun PengelolaHalaman() {
             )
         }
 
-        // Rute untuk Detail Pendapatan
-        composable(DestinasiDetailPendapatan.routeWithArg) { backStackEntry ->
-            val idAset = backStackEntry.arguments?.getString(DestinasiDetailPendapatan.ID_ASET)
-            DetailPendapatanScreen(
+        // Rute untuk Detail Pengeluaran
+        composable(DestinasiDetailPengeluaran.routeWithArg) { backStackEntry ->
+            val idAset = backStackEntry.arguments?.getString(DestinasiDetailPengeluaran.ID_ASET)
+            DetailPengeluaranScreen(
                 navigateBack = { navController.popBackStack() },
-                navigateToEdit = { /* Navigasi ke layar edit pendapatan */ },
+                navigateToEdit = { /* Navigasi ke layar edit pengeluaran */ },
                 onDelete = { /* Handle delete action */ }
             )
         }
@@ -152,3 +152,4 @@ fun PengelolaHalaman() {
         }
     }
 }
+

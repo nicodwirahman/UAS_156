@@ -13,6 +13,7 @@ sealed class HomeAsetUiState {
     object Loading : HomeAsetUiState()
 }
 
+
 class HomeAsetViewModel(private val asetRepository: AsetRepository) : ViewModel() {
     var asetUiState: HomeAsetUiState by mutableStateOf(HomeAsetUiState.Loading)
         private set
@@ -26,7 +27,8 @@ class HomeAsetViewModel(private val asetRepository: AsetRepository) : ViewModel(
         viewModelScope.launch {
             asetUiState = HomeAsetUiState.Loading
             asetUiState = try {
-                val asetList = asetRepository.allAset.value ?: emptyList()
+                // Ambil list aset dari repository menggunakan getAllAset()
+                val asetList = asetRepository.getAllAset() // Ganti dengan fungsi yang benar
                 HomeAsetUiState.Success(asetList)
             } catch (e: Exception) {
                 HomeAsetUiState.Error
@@ -38,7 +40,8 @@ class HomeAsetViewModel(private val asetRepository: AsetRepository) : ViewModel(
     fun deleteAset(aset: Aset) {
         viewModelScope.launch {
             try {
-                asetRepository.deleteAset(aset)
+                // Hapus aset dengan idAset
+                asetRepository.deleteAset(aset.idAset)
             } catch (e: Exception) {
                 asetUiState = HomeAsetUiState.Error
             }

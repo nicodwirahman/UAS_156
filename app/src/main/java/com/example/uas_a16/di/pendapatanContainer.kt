@@ -1,11 +1,13 @@
-import com.example.uas_a16.DAO.AsetDao
-import com.example.uas_a16.DAO.KategoriDao
-import com.example.uas_a16.DAO.PendapatanDao
-import com.example.uas_a16.DAO.PengeluaranDao
+
 import com.example.uas_a16.Repository.AsetRepository
 import com.example.uas_a16.Repository.KategoriRepository
+import com.example.uas_a16.Repository.NetworkAsetRepository
+import com.example.uas_a16.Repository.NetworkKategoriRepository
+import com.example.uas_a16.Repository.NetworkPendapatanRepository
+import com.example.uas_a16.Repository.NetworkPengeluaranRepository
 import com.example.uas_a16.Repository.PendapatanRepository
 import com.example.uas_a16.Repository.PengeluaranRepository
+import com.example.uas_a16.di.ApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -27,35 +29,27 @@ class PendapatanContainer : AppContainer {
         .baseUrl(baseUrl)
         .build()
 
-    // Aset
-    private val asetDao: AsetDao by lazy {
-        retrofit.create(AsetDao::class.java)
+    private val apiService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
     }
+
+    // Aset
     override val asetRepository: AsetRepository by lazy {
-        AsetRepository(asetDao)
+        NetworkAsetRepository(apiService)
     }
 
     // Pendapatan
-    private val pendapatanDao: PendapatanDao by lazy {
-        retrofit.create(PendapatanDao::class.java)
-    }
     override val pendapatanRepository: PendapatanRepository by lazy {
-        PendapatanRepository(pendapatanDao)
+        NetworkPendapatanRepository(apiService)
     }
 
     // Pengeluaran
-    private val pengeluaranDao: PengeluaranDao by lazy {
-        retrofit.create(PengeluaranDao::class.java)
-    }
     override val pengeluaranRepository: PengeluaranRepository by lazy {
-        PengeluaranRepository(pengeluaranDao)
+        NetworkPengeluaranRepository(apiService)
     }
 
     // Kategori
-    private val kategoriDao: KategoriDao by lazy {
-        retrofit.create(KategoriDao::class.java)
-    }
     override val kategoriRepository: KategoriRepository by lazy {
-        KategoriRepository(kategoriDao)
+        NetworkKategoriRepository(apiService)
     }
 }

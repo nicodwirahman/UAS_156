@@ -24,7 +24,8 @@ class UpdateKategoriViewModel(private val kategoriRepository: KategoriRepository
                 if (kategori.namaKategori.isBlank()) {
                     throw IllegalArgumentException("Nama kategori tidak boleh kosong")
                 }
-                kategoriRepository.updateKategori(kategori) // Gunakan updateKategori, bukan insertKategori
+                // Menggunakan id dari kategori dan objek kategori untuk update
+                kategoriRepository.updateKategori(kategori.idKategori, kategori)
                 updateKategoriUiState.value = UpdateKategoriUiState.Success
             } catch (e: Exception) {
                 updateKategoriUiState.value = UpdateKategoriUiState.Error
