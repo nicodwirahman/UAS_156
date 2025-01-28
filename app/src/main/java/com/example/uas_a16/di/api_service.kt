@@ -22,65 +22,65 @@ interface ApiService {
 
     // Aset Endpoints
     @POST("aset")
-    suspend fun insertAset(@Body aset: Aset): Response<Aset>
+    suspend fun insertAset(@Body aset: Aset): Aset
 
     @GET("aset")
-    suspend fun getAllAset(): Response<List<Aset>>
+    suspend fun getAllAset(): List<Aset>
 
     @GET("aset/{id}")
-    suspend fun getAsetById(@Path("id") id: Int): Response<Aset>
+    suspend fun getAsetById(@Path("id") id: Int): Aset
 
     @PUT("aset/{id}")
-    suspend fun updateAset(@Path("id") id: Int, @Body aset: Aset): Response<Aset>
+    suspend fun updateAset(@Path("id") id: Int, @Body aset: Aset): Aset
 
     @DELETE("aset/{id}")
-    suspend fun deleteAset(@Path("id") id: Int): Response<Void>
+    suspend fun deleteAset(@Path("id") id: Int)
 
     // Kategori Endpoints
     @POST("kategori")
-    suspend fun insertKategori(@Body kategori: Kategori): Response<Kategori>
+    suspend fun insertKategori(@Body kategori: Kategori): Kategori
 
     @GET("kategori")
-    suspend fun getAllKategori(): Response<List<Kategori>>
+    suspend fun getAllKategori(): List<Kategori>
 
     @GET("kategori/{id}")
-    suspend fun getKategoriById(@Path("id") id: Int): Response<Kategori>
+    suspend fun getKategoriById(@Path("id") id: Int): Kategori
 
     @PUT("kategori/{id}")
-    suspend fun updateKategori(@Path("id") id: Int, @Body kategori: Kategori): Response<Kategori>
+    suspend fun updateKategori(@Path("id") id: Int, @Body kategori: Kategori): Kategori
 
     @DELETE("kategori/{id}")
-    suspend fun deleteKategori(@Path("id") id: Int): Response<Void>
+    suspend fun deleteKategori(@Path("id") id: Int)
 
     // Pengeluaran Endpoints
     @POST("pengeluaran")
-    suspend fun insertPengeluaran(@Body pengeluaran: Pengeluaran): Response<Pengeluaran>
+    suspend fun insertPengeluaran(@Body pengeluaran: Pengeluaran): Pengeluaran
 
     @GET("pengeluaran")
-    suspend fun getAllPengeluaran(): Response<List<Pengeluaran>>
+    suspend fun getAllPengeluaran(): List<Pengeluaran>
 
     @GET("pengeluaran/{id}")
-    suspend fun getPengeluaranById(@Path("id") id: Int): Response<Pengeluaran>
+    suspend fun getPengeluaranById(@Path("id") id: Int): Pengeluaran
 
     @PUT("pengeluaran/{id}")
-    suspend fun updatePengeluaran(@Path("id") id: Int, @Body pengeluaran: Pengeluaran): Response<Pengeluaran>
+    suspend fun updatePengeluaran(@Path("id") id: Int, @Body pengeluaran: Pengeluaran): Pengeluaran
 
     @DELETE("pengeluaran/{id}")
-    suspend fun deletePengeluaran(@Path("id") id: Int): Response<Void>
+    suspend fun deletePengeluaran(@Path("id") id: Int)
 
     // Pendapatan Endpoints
     @POST("pendapatan")
-    suspend fun insertPendapatan(@Body pendapatan: Pendapatan): Response<Pendapatan>
+    suspend fun insertPendapatan(@Body pendapatan: Pendapatan): Pendapatan
 
     @GET("pendapatan")
-    suspend fun getAllPendapatan(): Response<List<Pendapatan>>
+    suspend fun getAllPendapatan(): List<Pendapatan>
 
     @GET("pendapatan/{id}")
-    suspend fun getPendapatanById(@Path("id") id: Int): Response<Pendapatan>
+    suspend fun getPendapatanById(@Path("id") id: Int): Pendapatan
 
     @PUT("pendapatan/{id}")
-    suspend fun updatePendapatan(@Path("id") id: Int, @Body pendapatan: Pendapatan): Response<Pendapatan>
+    suspend fun updatePendapatan(@Path("id") id: Int, @Body pendapatan: Pendapatan): Pendapatan
 
     @DELETE("pendapatan/{id}")
-    suspend fun deletePendapatan(@Path("id") id: Int): Response<Void>
+    suspend fun deletePendapatan(@Path("id") id: Int)
 }
