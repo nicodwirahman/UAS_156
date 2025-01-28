@@ -34,6 +34,120 @@ object DestinasiDetailPendapatan : AlamatNavigasi {
     val titleRes = "Detail Pendapatan"
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailPendapatanScreen(
+    navigateBack: () -> Unit,
+    navigateToEdit: () -> Unit,
+    onDelete: () -> Unit, // Tambahkan parameter untuk fungsi hapus
+    modifier: Modifier = Modifier,
+    viewModel: DetailPendapatanViewModel = viewModel()
+) {
+    Scaffold(
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiDetailPendapatan.titleRes,
+                canNavigateBack = true,
+                navigateUp = navigateBack
+            )
+        },
+        floatingActionButton = {
+            Row(
+                modifier = Modifier.padding(18.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = navigateToEdit,
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Pendapatan")
+                }
+                FloatingActionButton(
+                    onClick = onDelete, // Button hapus
+                    shape = MaterialTheme.shapes.medium,
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                ) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Hapus Pendapatan")
+                }
+            }
+        }
+    ) { innerPadding ->
+        BodyDetailPendapatan(
+            detailUiState = viewModel.detailUiState,
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+}
+
+@Composable
+fun BodyDetailPendapatan(
+    detailUiState: DetailPendapatanUiState,
+    modifier: Modifier = Modifier
+) {
+    when {
+        detailUiState.isLoading -> {
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        detailUiState.isError -> {
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = detailUiState.errorMessage,
+                    color = Color.Red
+                )
+            }
+        }
+        detailUiState.isUiEventNotEmpty -> {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                item {
+                    ItemDetailPendapatan(
+                        pendapatan = detailUiState.detailUiEvent.toPendapatan(),
+                        modifier = modifier
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemDetailPendapatan(
+    modifier: Modifier = Modifier,
+    pendapatan: Pendapatan
+) {
+    Card(
+        modifier = modifier.fillMaxWidth().padding(top = 20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            ComponentDetailPendapatan(judul = "ID Kategori", isinya = pendapatan.idKategori.toString())
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailPendapatan(judul = "Total", isinya = pendapatan.total.toString())
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailPendapatan(judul = "Tanggal Transaksi", isinya = pendapatan.tanggalTransaksi)
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailPendapatan(judul = "Catatan", isinya = pendapatan.catatan)
+        }
+    }
+}
+
 @Composable
 fun ComponentDetailPendapatan(
     modifier: Modifier = Modifier,
