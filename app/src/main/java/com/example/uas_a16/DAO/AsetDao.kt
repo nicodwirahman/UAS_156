@@ -16,4 +16,8 @@ interface AsetDao {
     @Query("SELECT * FROM aset")
     fun getAllAset(): LiveData<List<Aset>>
 
+    // Menambahkan Aset baru
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAset(aset: Aset)
+
 }
