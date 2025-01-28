@@ -45,7 +45,50 @@ object DestinasiDetailPengeluaran: AlamatNavigasi {
     val titleRes = "Detail Pengeluaran"
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DetailPengeluaranScreen(
+    navigateBack: () -> Unit,
+    navigateToEdit: () -> Unit,
+    onDelete: () -> Unit, // Tambahkan parameter untuk fungsi hapus
+    modifier: Modifier = Modifier,
+    viewModel: DetailPengeluaranViewModel = viewModel()
+) {
+    Scaffold(
+        topBar = {
+            CostumeTopAppBar(
+                title = DestinasiDetailPengeluaran.titleRes,
+                canNavigateBack = true,
+                navigateUp = navigateBack
+            )
+        },
+        floatingActionButton = {
+            Row(
+                modifier = Modifier.padding(18.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FloatingActionButton(
+                    onClick = navigateToEdit,
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Pengeluaran")
+                }
+                FloatingActionButton(
+                    onClick = onDelete, // Button hapus
+                    shape = MaterialTheme.shapes.medium,
+                    containerColor = MaterialTheme.colorScheme.errorContainer
+                ) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Hapus Pengeluaran")
+                }
+            }
+        }
+    ) { innerPadding ->
+        BodyDetailPengeluaran(
+            detailUiState = viewModel.detailUiState,
+            modifier = Modifier.padding(innerPadding)
+        )
+    }
+}
 @Composable
 fun BodyDetailPengeluaran(
     detailUiState: DetailPengeluaranUiState,
