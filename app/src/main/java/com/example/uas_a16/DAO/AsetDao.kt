@@ -23,6 +23,10 @@ interface AsetDao {
     // Menghapus Aset
     @Delete
     suspend fun deleteAset(aset: Aset)
+    // Mendapatkan Aset berdasarkan ID
+    @Query("SELECT * FROM aset WHERE idAset = :idAset")
+    fun getAsetById(idAset: Int): LiveData<Aset>
+
 
 
 }
