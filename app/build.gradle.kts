@@ -61,6 +61,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.animation.core.lint)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,11 +77,21 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.serialization.json)
-
-
-
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
+
+    implementation("androidx.room:room-runtime:2.6.0")
+
+    implementation("androidx.room:room-ktx:2.6.0")
+    implementation ("com.google.android.gms:play-services-ads:21.5.0")
+    implementation ("androidx.compose.material3:material3:1.2.0-alpha04")
+
+
+        implementation ("androidx.compose.runtime:runtime:1.5.4") // atau versi terbaru
+        implementation ("androidx.compose.runtime:runtime-livedata:1.5.4") // jika menggunakan LiveData
+        implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2") // untuk ViewModel di Compose
 
 
 
