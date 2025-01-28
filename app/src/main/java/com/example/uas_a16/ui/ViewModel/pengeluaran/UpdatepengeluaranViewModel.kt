@@ -20,31 +20,33 @@ class UpdatePengeluaranViewModel(
     private val _Aset: Int = checkNotNull(savedStateHandle[DestinasiUpdate.route]) // Memastikan ID pengeluaran ada di SavedState
 
     init {
-
-        pengeluaranRepository.getPengeluaranByAset(_Aset).observeForever { pengeluaranList ->
-
-            pengeluaranList?.firstOrNull()?.let { pengeluaran ->
-                updateUiState = pengeluaran.toUiStatePengeluaran()
+        // Mengambil data Pengeluaran berdasarkan ID Aset secara async dalam coroutine
+        viewModelScope.launch {
+            try {
+                val pengeluaran = pengeluaranRepository.getPengeluaranById(_Aset)
+                pengeluaran?.let {
+                    updateUiState = it.toUiStatePengeluaran() // Sesuaikan dengan cara Anda mengonversi pengeluaran ke UI State
+                }
+            } catch (e: Exception) {
+                // Tangani jika terjadi kesalahan
+                e.printStackTrace()
             }
         }
     }
 
-
-
-
+    // Fungsi untuk memperbarui UI State dengan event yang baru
     fun updateInsertPengeluaranState(insertPengeluaranEvent: InsertPengeluaranEvent) {
         updateUiState = InsertPengeluaranUiState(insertPengeluaranEvent = insertPengeluaranEvent)
     }
 
+    // Fungsi untuk memperbarui pengeluaran
     suspend fun updatePengeluaran() {
         viewModelScope.launch {
             try {
-
-                pengeluaranRepository.updatePengeluaran(updateUiState.insertPengeluaranEvent.toPengeluaran())
+                pengeluaranRepository.updatePengeluaran(_Aset, updateUiState.insertPengeluaranEvent.toPengeluaran())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
 }
-
