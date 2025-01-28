@@ -3,19 +3,86 @@ package com.example.uas_a16.ui.view.pendapatan
 
 
 import androidx.compose.foundation.layout.*
-
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.uas_a16.ui.ViewModel.pendapatan.InsertPendapatanEvent
 import com.example.uas_a16.ui.ViewModel.pendapatan.InsertPendapatanUiState
+import com.example.uas_a16.ui.ViewModel.pendapatan.UpdatePendapatanUiState
+import com.example.uas_a16.ui.ViewModel.pendapatan.UpdatePendapatanViewModel
+import com.example.uas_a16.ui.view.Aset.CostumeTopAppBar
+import kotlinx.coroutines.launch
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UpdatePendapatanScreen(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigate: () -> Unit,
+    viewModel: UpdatePendapatanViewModel = viewModel()
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    // Ambil state langsung dari ViewModel
+    val uiState = viewModel.updatePendapatanUiState.value
+
+    Scaffold(
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            CostumeTopAppBar(
+                title = "Update Pendapatan",
+                canNavigateBack = true,
+                scrollBehavior = scrollBehavior,
+                navigateUp = onBack
+            )
+        }
+    ) { innerPadding ->
+        when (uiState) {
+            is UpdatePendapatanUiState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                )
+            }
+            is UpdatePendapatanUiState.Success -> {
+                EntryBody(
+                    insertUiState = viewModel.insertUiState,
+                    onPendapatanValueChange = viewModel::updateInsertPendapatanState,
+                    onSaveClick = {
+                        coroutineScope.launch {
+                            viewModel.updatePendapatan()
+                            onNavigate()
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                )
+            }
+            is UpdatePendapatanUiState.Error -> {
+                Text(
+                    text = "Gagal memperbarui data. Silakan coba lagi.",
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center),
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+    }
+}
 @Composable
 fun EntryBody(
     insertUiState: InsertPendapatanUiState,
