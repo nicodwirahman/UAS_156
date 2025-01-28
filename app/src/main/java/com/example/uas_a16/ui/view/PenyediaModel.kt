@@ -38,11 +38,7 @@ object PenyediaModel {
                 PencatatanApp().container.asetRepository
             )
         }
-        initializer {
-            DetailViewModelAset(
-                PencatatanApp().container.asetRepository
-            )
-        }
+
 
         // Pengeluaran ViewModels
         initializer {
@@ -55,16 +51,8 @@ object PenyediaModel {
                 PencatatanApp().container.pengeluaranRepository
             )
         }
-        initializer {
-            UpdatePengeluaranViewModel(
-                PencatatanApp().container.pengeluaranRepository
-            )
-        }
-        initializer {
-            DetailPengeluaranViewModel(
-                PencatatanApp().container.pengeluaranRepository
-            )
-        }
+
+
 
         // Pendapatan ViewModels
         initializer {
@@ -82,11 +70,7 @@ object PenyediaModel {
                 PencatatanApp().container.pendapatanRepository
             )
         }
-        initializer {
-            DetailPendapatanViewModel(
-                PencatatanApp().container.pendapatanRepository
-            )
-        }
+
 
         // Kategori ViewModels
         initializer {
@@ -101,11 +85,6 @@ object PenyediaModel {
         }
         initializer {
             UpdateKategoriViewModel(
-                PencatatanApp().container.kategoriRepository
-            )
-        }
-        initializer {
-            DetailKategoriViewMode(
                 PencatatanApp().container.kategoriRepository
             )
         }
