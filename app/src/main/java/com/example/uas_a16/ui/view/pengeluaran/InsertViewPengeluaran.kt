@@ -26,26 +26,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.uas_a16.Repository.PengeluaranRepository
 import com.example.uas_a16.model.Aset
 import com.example.uas_a16.model.Kategori
+import com.example.uas_a16.model.Pengeluaran
 import com.example.uas_a16.ui.ViewModel.pengeluaran.InsertPengeluaranEvent
 import com.example.uas_a16.ui.ViewModel.pengeluaran.InsertPengeluaranUiState
 import com.example.uas_a16.ui.ViewModel.pengeluaran.InsertPengeluaranViewModel
 import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
 import kotlinx.coroutines.launch
 import java.util.Date
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun FormInputPengeluaran(
-    insertPengeluaranEvent: InsertPengeluaranEvent, // Wajib
-    kategoriList: List<Kategori>, // Wajib
-    asetList: List<Aset>, // Wajib
-    onValueChange: (InsertPengeluaranEvent) -> Unit, // Wajib
-    modifier: Modifier = Modifier, // Opsional (default: Modifier)
-    enabled: Boolean = true // Opsional (default: true)
+    insertPengeluaranEvent: InsertPengeluaranEvent,
+    kategoriList: List<Kategori>,
+    asetList: List<Aset>,
+    onValueChange: (InsertPengeluaranEvent) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Column(
         modifier = modifier,
@@ -58,7 +60,7 @@ fun FormInputPengeluaran(
             onExpandedChange = { expandedAset = it }
         ) {
             OutlinedTextField(
-                value = insertPengeluaranEvent.idAset.toString(),
+                value = asetList.find { it.idAset == insertPengeluaranEvent.idAset }?.namaAset ?: "Pilih Aset",
                 onValueChange = { },
                 label = { Text("Pilih Aset") },
                 modifier = Modifier.fillMaxWidth(),
@@ -90,7 +92,7 @@ fun FormInputPengeluaran(
             onExpandedChange = { expandedKategori = it }
         ) {
             OutlinedTextField(
-                value = insertPengeluaranEvent.idKategori.toString(),
+                value = kategoriList.find { it.idKategori == insertPengeluaranEvent.idKategori }?.namaKategori ?: "Pilih Kategori",
                 onValueChange = { },
                 label = { Text("Pilih Kategori") },
                 modifier = Modifier.fillMaxWidth(),
@@ -115,71 +117,10 @@ fun FormInputPengeluaran(
             }
         }
 
-        // Input lainnya...
-    }
-}
-@Composable
-fun InsertPengeluaranBody(
-    insertPengeluaranUiState: InsertPengeluaranUiState,
-    onValueChange: (InsertPengeluaranEvent) -> Unit,
-    onSaveClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(18.dp),
-        modifier = modifier.padding(12.dp)
-    ) {
-        FormInputPengeluaran(
-            insertPengeluaranEvent = insertPengeluaranUiState.insertPengeluaranEvent,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Button(
-            onClick = onSaveClick,
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Simpan")
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FormInputPengeluaran(
-    insertPengeluaranEvent: InsertPengeluaranEvent,
-    modifier: Modifier = Modifier,
-    onValueChange: (InsertPengeluaranEvent) -> Unit = {},
-    enabled: Boolean = true
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        // Dropdown untuk memilih aset
-        OutlinedTextField(
-            value = insertPengeluaranEvent.idAset.toString(),
-            onValueChange = { onValueChange(insertPengeluaranEvent.copy(idAset = it.toInt())) },
-            label = { Text("ID Aset") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-
-        // Dropdown untuk memilih kategori
-        OutlinedTextField(
-            value = insertPengeluaranEvent.idKategori.toString(),
-            onValueChange = { onValueChange(insertPengeluaranEvent.copy(idKategori = it.toInt())) },
-            label = { Text("ID Kategori") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = enabled,
-            singleLine = true
-        )
-
         // Input untuk total pengeluaran
         OutlinedTextField(
-            value = insertPengeluaranEvent.total.toString(),
-            onValueChange = { onValueChange(insertPengeluaranEvent.copy(total = it.toDouble())) },
+            value = if (insertPengeluaranEvent.total > 0) insertPengeluaranEvent.total.toString() else "",
+            onValueChange = { onValueChange(insertPengeluaranEvent.copy(total = it.toDoubleOrNull() ?: 0.0)) },
             label = { Text("Total Pengeluaran") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
@@ -188,8 +129,8 @@ fun FormInputPengeluaran(
 
         // Input untuk tanggal transaksi
         OutlinedTextField(
-            value = insertPengeluaranEvent.tanggalTransaksi.toString(),
-            onValueChange = { onValueChange(insertPengeluaranEvent.copy(tanggalTransaksi = "")) },
+            value = insertPengeluaranEvent.tanggalTransaksi,
+            onValueChange = { onValueChange(insertPengeluaranEvent.copy(tanggalTransaksi = it)) },
             label = { Text("Tanggal Transaksi") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
@@ -205,17 +146,79 @@ fun FormInputPengeluaran(
             enabled = enabled,
             singleLine = true
         )
-
-        if (enabled) {
-            Text(
-                text = "Isi Semua Data!",
-                modifier = Modifier.padding(12.dp)
-            )
-        }
-
-        Divider(
-            thickness = 8.dp,
-            modifier = Modifier.padding(12.dp)
-        )
     }
 }
+
+@Composable
+fun InsertPengeluaranBody(
+    insertPengeluaranUiState: InsertPengeluaranUiState,
+    onValueChange: (InsertPengeluaranEvent) -> Unit,
+    onSaveClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(18.dp),
+        modifier = modifier.padding(12.dp)
+    ) {
+        FormInputPengeluaran(
+            insertPengeluaranEvent = insertPengeluaranUiState.insertPengeluaranEvent,
+            kategoriList = emptyList(),
+            asetList = emptyList(),
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Button(
+            onClick = onSaveClick,
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Simpan")
+        }
+    }
+}
+
+class InsertPengeluaranViewModel(private val pengeluaranRepository: PengeluaranRepository) : ViewModel() {
+
+    var uiState by mutableStateOf(InsertPengeluaranUiState())
+        private set
+
+    fun updateInsertPengeluaranState(insertPengeluaranEvent: InsertPengeluaranEvent) {
+        uiState = uiState.copy(insertPengeluaranEvent = insertPengeluaranEvent)
+    }
+
+    fun insertPengeluaran() {
+        viewModelScope.launch {
+            try {
+                val pengeluaran = uiState.insertPengeluaranEvent.toPengeluaran()
+                pengeluaranRepository.insertPengeluaran(pengeluaran)
+                uiState = uiState.copy(isSuccess = true, successMessage = "Pengeluaran berhasil disimpan")
+            } catch (e: Exception) {
+                uiState = uiState.copy(isError = true, errorMessage = e.message ?: "Gagal menyimpan pengeluaran")
+            }
+        }
+    }
+}
+
+data class InsertPengeluaranUiState(
+    val insertPengeluaranEvent: InsertPengeluaranEvent = InsertPengeluaranEvent(),
+    val isSuccess: Boolean = false,
+    val successMessage: String = "",
+    val isError: Boolean = false,
+    val errorMessage: String = ""
+)
+
+data class InsertPengeluaranEvent(
+    val idAset: Int = 0,
+    val idKategori: Int = 0,
+    val total: Double = 0.0,
+    val tanggalTransaksi: String = "",
+    val catatan: String = ""
+)
+
+fun InsertPengeluaranEvent.toPengeluaran(): Pengeluaran = Pengeluaran(
+    idAset = idAset,
+    idKategori = idKategori,
+    total = total,
+    tanggalTransaksi = tanggalTransaksi,
+    catatan = catatan
+)
