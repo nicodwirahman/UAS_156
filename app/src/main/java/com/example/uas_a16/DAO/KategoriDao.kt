@@ -21,5 +21,13 @@ interface KategoriDao {
     suspend fun updateKategori(kategori: Kategori)
 
 
+    @Query("SELECT * FROM kategori")
+    fun getAllKategori(): LiveData<List<Kategori>>
+
+    @Query("SELECT * FROM kategori WHERE idKategori = :idKategori")
+    fun getKategoriById(idKategori: Int): LiveData<Kategori>
+
+
+
 
 }
