@@ -18,5 +18,11 @@ interface PendapatanDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPendapatan(pendapatan: Pendapatan)
 
+    // Menghapus data pendapatan
+    @Delete
+    suspend fun deletePendapatan(pendapatan: Pendapatan)
+
+    @Query("UPDATE pendapatan SET total = total + :total WHERE idAset = :idAset")
+    suspend fun updatePendapatan(idAset: Int, total: Double)
 
 }
