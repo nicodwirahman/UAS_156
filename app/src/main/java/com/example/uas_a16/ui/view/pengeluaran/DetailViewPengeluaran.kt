@@ -45,6 +45,74 @@ object DestinasiDetailPengeluaran: AlamatNavigasi {
     val titleRes = "Detail Pengeluaran"
 }
 
+
+@Composable
+fun BodyDetailPengeluaran(
+    detailUiState: DetailPengeluaranUiState,
+    modifier: Modifier = Modifier
+) {
+    when {
+        detailUiState.isLoading -> {
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+        detailUiState.isError -> {
+            Box(
+                modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = detailUiState.errorMessage,
+                    color = Color.Red
+                )
+            }
+        }
+        detailUiState.isUiEventNotEmpty -> {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                ItemDetailPengeluaran(
+                    pengeluaran = detailUiState.detailUiEvent.toPengeluaran(),
+                    modifier = modifier
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemDetailPengeluaran(
+    modifier: Modifier = Modifier,
+    pengeluaran: Pengeluaran
+) {
+    Card(
+        modifier = modifier.fillMaxWidth().padding(top = 20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+        ) {
+            ComponentDetailPengeluaran(judul = "ID Kategori", isinya = pengeluaran.idKategori.toString())
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailPengeluaran(judul = "Total", isinya = pengeluaran.total.toString())
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailPengeluaran(judul = "Tanggal Transaksi", isinya = pengeluaran.tanggalTransaksi)
+            Spacer(modifier = Modifier.padding(4.dp))
+            ComponentDetailPengeluaran(judul = "Catatan", isinya = pengeluaran.catatan)
+        }
+    }
+}
+
 @Composable
 fun ComponentDetailPengeluaran(
     modifier: Modifier = Modifier,
