@@ -28,5 +28,8 @@ interface AsetDao {
     fun getAsetById(idAset: Int): LiveData<Aset>
 
 
+    // Mengupdate Aset
+    @Update
+    suspend fun updateAset(aset: Aset)
 
 }
