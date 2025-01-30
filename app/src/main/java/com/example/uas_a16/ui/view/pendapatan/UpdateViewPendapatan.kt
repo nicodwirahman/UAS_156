@@ -21,7 +21,6 @@ import com.example.uas_a16.ui.view.PenyediaModel
 import kotlinx.coroutines.launch
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdatePendapatanScreen(
@@ -84,6 +83,7 @@ fun UpdatePendapatanScreen(
         }
     }
 }
+
 @Composable
 fun EntryBody(
     insertUiState: InsertPendapatanUiState,
@@ -165,7 +165,7 @@ fun FormInput(
             )
         }
 
-        Divider(
+        HorizontalDivider(
             thickness = 8.dp,
             modifier = Modifier.padding(12.dp)
         )

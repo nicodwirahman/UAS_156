@@ -22,7 +22,7 @@ interface AppContainer {
 }
 
 class PendapatanContainer : AppContainer {
-    private val baseUrl = "http://10.2.2:3000/pencataan_keuangan/" // Sesuaikan baseUrl sesuai kebutuhan
+    private val baseUrl = "http://10.2.2:3001/pencataan_keuangan/" // Sesuaikan baseUrl sesuai kebutuhan
     private val json = Json { ignoreUnknownKeys = true }
     private val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))

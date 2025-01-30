@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -110,14 +110,13 @@ fun InsertPendapatanBody(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun FormInputPendapatan(
     insertPendapatanEvent: InsertPendapatanEvent,
     kategoriList: List<Kategori>, // Daftar kategori
     asetList: List<Aset>, // Daftar aset
     onValueChange: (InsertPendapatanEvent) -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true // Use enabled parameter here
 ) {
     Column(
         modifier = modifier,
@@ -135,6 +134,7 @@ fun FormInputPendapatan(
                 label = { Text("Pilih Aset") },
                 modifier = Modifier.fillMaxWidth(),
                 readOnly = true,
+                enabled = enabled, // Set enabled here
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedAset)
                 }
@@ -167,6 +167,7 @@ fun FormInputPendapatan(
                 label = { Text("Pilih Kategori") },
                 modifier = Modifier.fillMaxWidth(),
                 readOnly = true,
+                enabled = enabled, // Set enabled here
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedKategori)
                 }

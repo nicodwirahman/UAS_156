@@ -10,13 +10,12 @@ import com.example.uas_a16.ui.view.Aset.DetailAsetScreen
 import com.example.uas_a16.ui.view.Aset.HomeAsetScreen
 import com.example.uas_a16.ui.view.Aset.InsertAsetScreen
 import com.example.uas_a16.ui.view.Aset.UpdateAsetScreen
-import com.example.uas_a16.ui.view.Keungan.HomeKeuanganView
 import com.example.uas_a16.ui.view.kategori.HomeKategoriScreen
 import com.example.uas_a16.ui.view.kategori.InsertKategoriScreen
-import com.example.uas_a16.ui.view.pendapatan.DestinasiDetailPendapatan
 import com.example.uas_a16.ui.view.pendapatan.DetailPendapatanScreen
 import com.example.uas_a16.ui.view.pendapatan.HomePendapatanScreen
 import com.example.uas_a16.ui.view.pendapatan.InsertPendapatanScreen
+import com.example.uas_a16.ui.view.pendapatan.UpdatePendapatanScreen
 import com.example.uas_a16.ui.view.pengeluaran.DetailPengeluaranScreen
 import com.example.uas_a16.ui.view.pengeluaran.FormInputPengeluaran
 import com.example.uas_a16.ui.view.pengeluaran.HomePengeluaranScreen
@@ -32,13 +31,8 @@ fun PengelolaHalaman(
 
     NavHost(
         navController = navController,
-        startDestination = DestinasiKeuangan.route
+        startDestination = DestinasiPengeluaran.route // Mengubah start destination ke DestinasiPengeluaran
     ) {
-        // Rute untuk Halaman Keuangan (HomeKeuangan)
-        composable(DestinasiKeuangan.route) {
-            HomeKeuanganView(navController = navController)
-        }
-
         // Rute untuk Home Pengeluaran
         composable("homePengeluaran") {
             HomePengeluaranScreen(
@@ -53,11 +47,11 @@ fun PengelolaHalaman(
         composable("insertPengeluaran") {
             FormInputPengeluaran(
                 insertPengeluaranEvent = InsertPengeluaranEvent(),
-                kategoriList = listOf(), // Ganti dengan daftar kategori yang valid
-                asetList = listOf(), // Ganti dengan daftar aset yang valid
+                kategoriList = listOf(),
+                asetList = listOf(),
                 onValueChange = { /* Handle value change */ },
-                modifier = modifier, // Menggunakan modifier yang diberikan
-                enabled = true // Opsional, bisa dihapus jika tidak diperlukan
+                modifier = modifier,
+                enabled = true
             )
         }
 
@@ -93,8 +87,8 @@ fun PengelolaHalaman(
         composable("insertPendapatan") {
             InsertPendapatanScreen(
                 navigateBack = { navController.popBackStack() },
-                asetList = listOf(), // Isi dengan daftar aset
-                kategoriList = listOf() // Isi dengan daftar kategori
+                asetList = listOf(),
+                kategoriList = listOf()
             )
         }
 
@@ -150,6 +144,15 @@ fun PengelolaHalaman(
                 navigateToEdit = { /* Navigasi ke layar edit aset */ }
             )
         }
+
+        // Rute untuk Detail Pendapatan
+        composable(DestinasiDetailPendapatan.routeWithArg) { backStackEntry ->
+            val idAset = backStackEntry.arguments?.getString(DestinasiDetailPendapatan.ID_ASET)
+            DetailPendapatanScreen(
+                navigateBack = { navController.popBackStack() },
+                navigateToEdit = { /* Navigasi ke layar edit pendapatan */ },
+                onDelete = { /* Tangani aksi hapus pendapatan */ }
+            )
+        }
     }
 }
-

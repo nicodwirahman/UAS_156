@@ -8,11 +8,11 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,18 +21,9 @@ import com.example.uas_a16.model.Pendapatan
 import com.example.uas_a16.ui.ViewModel.pendapatan.DetailPendapatanViewModel
 import com.example.uas_a16.ui.ViewModel.pendapatan.DetailPendapatanUiState
 import com.example.uas_a16.ui.ViewModel.pendapatan.toPendapatan
-import com.example.uas_a16.ui.navigasi.AlamatNavigasi
+
 import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
-
-
-object DestinasiDetailPendapatan : AlamatNavigasi {
-    override val route = "detailPendapatan"
-    const val ID_ASET = "idAset"
-    val routeWithArg = "$route/{$ID_ASET}"
-
-    // Title untuk tampilan
-    val titleRes = "Detail Pendapatan"
-}
+import com.example.uas_a16.ui.navigasi.DestinasiDetailPendapatan
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +31,7 @@ fun DetailPendapatanScreen(
     navigateBack: () -> Unit,
     navigateToEdit: () -> Unit,
     onDelete: () -> Unit, // Tambahkan parameter untuk fungsi hapus
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier, // Parameter modifier digunakan
     viewModel: DetailPendapatanViewModel = viewModel()
 ) {
     Scaffold(
@@ -53,7 +44,8 @@ fun DetailPendapatanScreen(
         },
         floatingActionButton = {
             Row(
-                modifier = Modifier.padding(18.dp),
+                modifier = modifier
+                    .padding(18.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FloatingActionButton(
@@ -74,7 +66,7 @@ fun DetailPendapatanScreen(
     ) { innerPadding ->
         BodyDetailPendapatan(
             detailUiState = viewModel.detailUiState,
-            modifier = Modifier.padding(innerPadding)
+            modifier = modifier.padding(innerPadding) // Modifier digunakan di sini
         )
     }
 }
@@ -82,7 +74,7 @@ fun DetailPendapatanScreen(
 @Composable
 fun BodyDetailPendapatan(
     detailUiState: DetailPendapatanUiState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier // Parameter modifier digunakan
 ) {
     when {
         detailUiState.isLoading -> {
@@ -106,14 +98,14 @@ fun BodyDetailPendapatan(
         }
         detailUiState.isUiEventNotEmpty -> {
             LazyColumn(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp) // Modifier digunakan di sini
             ) {
                 item {
                     ItemDetailPendapatan(
                         pendapatan = detailUiState.detailUiEvent.toPendapatan(),
-                        modifier = modifier
+                        modifier = modifier // Modifier digunakan di sini
                     )
                 }
             }
@@ -123,26 +115,28 @@ fun BodyDetailPendapatan(
 
 @Composable
 fun ItemDetailPendapatan(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier, // Parameter modifier digunakan
     pendapatan: Pendapatan
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(top = 20.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp), // Modifier digunakan di sini
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             contentColor = MaterialTheme.colorScheme.onPrimaryContainer
         )
     ) {
         Column(
-            modifier = Modifier
-                .padding(16.dp)
+            modifier = modifier
+                .padding(16.dp) // Modifier digunakan di sini
         ) {
             ComponentDetailPendapatan(judul = "ID Kategori", isinya = pendapatan.idKategori.toString())
-            Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = modifier.padding(4.dp)) // Modifier digunakan di sini
             ComponentDetailPendapatan(judul = "Total", isinya = pendapatan.total.toString())
-            Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = modifier.padding(4.dp)) // Modifier digunakan di sini
             ComponentDetailPendapatan(judul = "Tanggal Transaksi", isinya = pendapatan.tanggalTransaksi)
-            Spacer(modifier = Modifier.padding(4.dp))
+            Spacer(modifier = modifier.padding(4.dp)) // Modifier digunakan di sini
             ComponentDetailPendapatan(judul = "Catatan", isinya = pendapatan.catatan)
         }
     }
@@ -150,7 +144,7 @@ fun ItemDetailPendapatan(
 
 @Composable
 fun ComponentDetailPendapatan(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier, // Parameter modifier digunakan
     judul: String,
     isinya: String
 ) {
