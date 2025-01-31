@@ -2,9 +2,6 @@ package com.example.uas_a16.ui.view.Aset
 
 
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,12 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-
 import com.example.uas_a16.ui.ViewModel.aset.InsertAsetViewModel
 import com.example.uas_a16.ui.view.PenyediaModel
 
 @Composable
-
 fun InsertAsetScreen(
     navigateBack: () -> Unit,
     viewModel: InsertAsetViewModel = viewModel(factory = PenyediaModel.Factory)

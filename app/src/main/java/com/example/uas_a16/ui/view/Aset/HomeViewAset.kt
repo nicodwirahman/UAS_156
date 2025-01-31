@@ -138,37 +138,4 @@ fun AsetItem(
             }
         }
     }
-}// Komponen untuk TopAppBar kustom
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CostumeTopAppBar(
-    title: String,
-    canNavigateBack: Boolean,
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    navigateUp: () -> Unit = {},
-    onRefresh: () -> Unit = {}
-) {
-    CenterAlignedTopAppBar(
-        title = { Text(text = title) },
-        actions = {
-            Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "Refresh",
-                modifier = Modifier.clickable { onRefresh() }
-            )
-        },
-        modifier = modifier,
-        scrollBehavior = scrollBehavior,
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Navigate Back"
-                    )
-                }
-            }
-        }
-    )
 }

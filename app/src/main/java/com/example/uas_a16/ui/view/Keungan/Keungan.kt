@@ -26,7 +26,7 @@ fun HomeScreen(viewModel: FinanceViewModel) {
 
     val saldoColor = if (saldo >= 0) Color.Green else Color.Red
 
-    Column(
+    Box(
         modifier = androidx.compose.ui.Modifier.padding(16.dp)
     ) {
         Card(
@@ -47,4 +47,3 @@ fun HomeScreen(viewModel: FinanceViewModel) {
         }
     }
 }
-

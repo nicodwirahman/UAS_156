@@ -21,6 +21,7 @@ import com.example.uas_a16.ui.ViewModel.aset.DetailViewModelAset
 import com.example.uas_a16.ui.ViewModel.aset.DetailUiState
 import com.example.uas_a16.ui.ViewModel.aset.toAset
 import com.example.uas_a16.ui.navigasi.AlamatNavigasi
+import com.example.uas_a16.ui.navigasi.CostumeTopAppBar
 import com.example.uas_a16.ui.view.PenyediaModel
 
 object DestinasiDetailAset : AlamatNavigasi {
