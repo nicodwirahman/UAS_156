@@ -60,8 +60,7 @@ data class DetailPendapatanUiState(
     val isError: Boolean = false,
     val errorMessage: String = ""
 ) {
-    val isUiEventEmpty: Boolean
-        get() = detailUiEvent == InsertPendapatanEvent()
+
 
     val isUiEventNotEmpty: Boolean
         get() = detailUiEvent != InsertPendapatanEvent()

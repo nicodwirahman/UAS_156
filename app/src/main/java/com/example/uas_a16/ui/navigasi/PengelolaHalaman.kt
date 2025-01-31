@@ -2,14 +2,18 @@ package com.example.uas_a16.ui.navigasi
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.uas_a16.ui.ViewModel.Keuangan.FinanceViewModel
 import com.example.uas_a16.ui.ViewModel.pengeluaran.InsertPengeluaranEvent
 import com.example.uas_a16.ui.view.Aset.DetailAsetScreen
 import com.example.uas_a16.ui.view.Aset.HomeAsetScreen
 import com.example.uas_a16.ui.view.Aset.InsertAsetScreen
 import com.example.uas_a16.ui.view.Aset.UpdateAsetScreen
+import com.example.uas_a16.ui.view.Keungan.HomeScreen
+import com.example.uas_a16.ui.view.PenyediaModel
 import com.example.uas_a16.ui.view.kategori.HomeKategoriScreen
 import com.example.uas_a16.ui.view.kategori.InsertKategoriScreen
 import com.example.uas_a16.ui.view.pendapatan.DetailPendapatanScreen
@@ -23,17 +27,18 @@ import com.example.uas_a16.ui.view.pengeluaran.UpdateScreen
 
 
 @Composable
-
-fun PengelolaHalaman(
-    modifier: Modifier = Modifier
-) {
+fun PengelolaHalaman(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+    val viewModel: FinanceViewModel = viewModel(factory = PenyediaModel.Factory)
 
     NavHost(
         navController = navController,
-        startDestination = DestinasiPengeluaran.route // Mengubah start destination ke DestinasiPengeluaran
+        startDestination = "homeScreen" // Mengubah start destination ke HomeScreen
     ) {
-        // Rute untuk Home Pengeluaran
+        composable("homeScreen") {
+            HomeScreen(viewModel = viewModel)
+        }
+
         composable("homePengeluaran") {
             HomePengeluaranScreen(
                 navigateToInsert = { navController.navigate("insertPengeluaran") },
@@ -43,37 +48,35 @@ fun PengelolaHalaman(
             )
         }
 
-        // Rute untuk Insert Pengeluaran
         composable("insertPengeluaran") {
             FormInputPengeluaran(
                 insertPengeluaranEvent = InsertPengeluaranEvent(),
-                kategoriList = listOf(),
-                asetList = listOf(),
-                onValueChange = { /* Handle value change */ },
+                kategoriList = emptyList(),
+                asetList = emptyList(),
+                onValueChange = {},
                 modifier = modifier,
                 enabled = true
             )
         }
 
-        // Rute untuk Update Pengeluaran
         composable("updatePengeluaran") {
             UpdateScreen(
                 onBack = { navController.popBackStack() },
-                onNavigate = { /* Handle navigate action */ }
+                onNavigate = {}
             )
         }
 
-        // Rute untuk Detail Pengeluaran
         composable(DestinasiDetailPengeluaran.routeWithArg) { backStackEntry ->
             val idAset = backStackEntry.arguments?.getString(DestinasiDetailPengeluaran.ID_ASET)
-            DetailPengeluaranScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToEdit = { /* Navigasi ke layar edit pengeluaran */ },
-                onDelete = { /* Handle delete action */ }
-            )
+            idAset?.let {
+                DetailPengeluaranScreen(
+                    navigateBack = { navController.popBackStack() },
+                    navigateToEdit = {},
+                    onDelete = {}
+                )
+            }
         }
 
-        // Rute untuk Home Pendapatan
         composable("homePendapatan") {
             HomePendapatanScreen(
                 navigateToInsert = { navController.navigate("insertPendapatan") },
@@ -83,47 +86,41 @@ fun PengelolaHalaman(
             )
         }
 
-        // Rute untuk Insert Pendapatan
         composable("insertPendapatan") {
             InsertPendapatanScreen(
                 navigateBack = { navController.popBackStack() },
-                asetList = listOf(),
-                kategoriList = listOf()
+                asetList = emptyList(),
+                kategoriList = emptyList()
             )
         }
 
-        // Rute untuk Update Aset
         composable("updateAset") {
             UpdateAsetScreen(
                 onBack = { navController.popBackStack() },
-                onNavigate = { /* Handle navigate action */ }
+                onNavigate = {}
             )
         }
 
-        // Rute untuk Insert Kategori
         composable("insertKategori") {
             InsertKategoriScreen(
                 navigateBack = { navController.popBackStack() }
             )
         }
 
-        // Rute untuk Home Kategori
         composable("homeKategori") {
             HomeKategoriScreen(
                 navigateToInsert = { navController.navigate("insertKategori") },
-                navigateToDetail = { kategori -> /* Handle detail kategori */ },
-                navigateToEdit = { kategori -> /* Handle edit kategori */ }
+                navigateToDetail = {},
+                navigateToEdit = {}
             )
         }
 
-        // Rute untuk Insert Aset
         composable("insertAset") {
             InsertAsetScreen(
                 navigateBack = { navController.popBackStack() }
             )
         }
 
-        // Rute untuk Home Aset
         composable("homeAset") {
             HomeAsetScreen(
                 navigateToItemEntry = { navController.navigate("insertAset") },
@@ -136,23 +133,25 @@ fun PengelolaHalaman(
             )
         }
 
-        // Rute untuk Detail Aset
         composable(DestinasiDetailAset.routeWithArg) { backStackEntry ->
             val idAset = backStackEntry.arguments?.getString(DestinasiDetailAset.ID_ASET)
-            DetailAsetScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToEdit = { /* Navigasi ke layar edit aset */ }
-            )
+            idAset?.let {
+                DetailAsetScreen(
+                    navigateBack = { navController.popBackStack() },
+                    navigateToEdit = {}
+                )
+            }
         }
 
-        // Rute untuk Detail Pendapatan
         composable(DestinasiDetailPendapatan.routeWithArg) { backStackEntry ->
             val idAset = backStackEntry.arguments?.getString(DestinasiDetailPendapatan.ID_ASET)
-            DetailPendapatanScreen(
-                navigateBack = { navController.popBackStack() },
-                navigateToEdit = { /* Navigasi ke layar edit pendapatan */ },
-                onDelete = { /* Tangani aksi hapus pendapatan */ }
-            )
+            idAset?.let {
+                DetailPendapatanScreen(
+                    navigateBack = { navController.popBackStack() },
+                    navigateToEdit = {},
+                    onDelete = {}
+                )
+            }
         }
     }
 }
