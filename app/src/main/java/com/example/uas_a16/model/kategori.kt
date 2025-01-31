@@ -2,10 +2,11 @@ package com.example.uas_a16.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
-@Entity(tableName = "kategori")
+@Serializable
 data class Kategori(
-    @PrimaryKey(autoGenerate = true) val idKategori: Int = 0,
+    @PrimaryKey(autoGenerate = true)
     val namaKategori: String
 )
 
